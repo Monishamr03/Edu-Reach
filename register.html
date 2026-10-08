@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -9,46 +8,20 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>EduReach - Student Registration</title>
+    <meta
+        name="description"
+        content="Create your EduReach student account and start learning STEM subjects."
+    >
 
-    <link rel="stylesheet" href="style.css?v=3">
+    <title>Student Registration | EduReach</title>
 
+    <link
+        rel="stylesheet"
+        href="style.css?v=3"
+    >
 </head>
 
 <body>
-
-    <!-- =========================================
-         HEADER
-    ========================================== -->
-
-    <header class="site-header">
-
-        <div class="brand">
-
-            <div class="brand-mark">
-                E
-            </div>
-
-            <div>
-                <h1>EduReach</h1>
-
-                <span>
-                    Learn. Grow. Reach Further.
-                </span>
-            </div>
-
-        </div>
-
-
-        <a
-            href="login.html?role=student"
-            class="back-home"
-        >
-            ← Back to Login
-        </a>
-
-    </header>
-
 
     <!-- =========================================
          REGISTRATION PAGE
@@ -56,146 +29,132 @@
 
     <main class="auth-page">
 
-        <section class="auth-container">
+        <div class="auth-layout">
 
+            <!-- =================================
+                 LEFT INFORMATION SECTION
+            ================================== -->
 
-            <!-- LEFT SIDE -->
+            <section class="auth-intro">
 
-            <div class="auth-intro">
+                <div class="brand-mark">
+                    EduReach
+                </div>
 
                 <div class="auth-badge">
                     🎓 Student Registration
                 </div>
 
+                <h1>
+                    Start your learning journey.
+                </h1>
 
-                <h2>
-                    Start your
-                    <span>learning journey.</span>
-                </h2>
-
-
-                <p>
-                    Create your free EduReach student
-                    account and start learning STEM
-                    subjects at your own pace.
+                <p class="auth-intro-text">
+                    Create your free EduReach student account
+                    and start learning STEM subjects at your own pace.
                 </p>
 
 
-                <div class="auth-benefits">
+                <!-- Feature 1 -->
 
-                    <div class="benefit-item">
+                <div class="auth-feature">
 
-                        <div class="benefit-icon">
-                            📚
-                        </div>
-
-                        <div>
-
-                            <strong>
-                                Access learning content
-                            </strong>
-
-                            <p>
-                                Courses, lessons, videos,
-                                audio and quizzes.
-                            </p>
-
-                        </div>
-
+                    <div class="feature-icon">
+                        📚
                     </div>
 
+                    <div>
+                        <h3>
+                            Access learning content
+                        </h3>
 
-                    <div class="benefit-item">
-
-                        <div class="benefit-icon">
-                            ⭐
-                        </div>
-
-                        <div>
-
-                            <strong>
-                                Earn XP and achievements
-                            </strong>
-
-                            <p>
-                                Build your learning streak
-                                as you progress.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="benefit-item">
-
-                        <div class="benefit-icon">
-                            🌱
-                        </div>
-
-                        <div>
-
-                            <strong>
-                                Learn and grow
-                            </strong>
-
-                            <p>
-                                Designed to support accessible
-                                STEM education.
-                            </p>
-
-                        </div>
-
+                        <p>
+                            Courses, lessons, videos, audio and quizzes.
+                        </p>
                     </div>
 
                 </div>
 
-            </div>
+
+                <!-- Feature 2 -->
+
+                <div class="auth-feature">
+
+                    <div class="feature-icon">
+                        ⭐
+                    </div>
+
+                    <div>
+                        <h3>
+                            Earn XP and achievements
+                        </h3>
+
+                        <p>
+                            Build your learning streak as you progress.
+                        </p>
+                    </div>
+
+                </div>
 
 
-            <!-- RIGHT SIDE -->
+                <!-- Feature 3 -->
 
-            <div class="auth-card">
+                <div class="auth-feature">
 
-                <div class="auth-card-header">
+                    <div class="feature-icon">
+                        🌱
+                    </div>
 
-                    <div class="role-icon">
+                    <div>
+                        <h3>
+                            Learn and grow
+                        </h3>
+
+                        <p>
+                            Designed to support accessible STEM education.
+                        </p>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 REGISTRATION CARD
+            ================================== -->
+
+            <section class="auth-card">
+
+                <!-- Account type -->
+
+                <div class="account-type">
+
+                    <div class="account-type-icon">
                         🎓
                     </div>
 
                     <div>
-
-                        <p class="small-label">
+                        <span>
                             ACCOUNT TYPE
-                        </p>
+                        </span>
 
-                        <h3>
+                        <strong>
                             Student
-                        </h3>
-
+                        </strong>
                     </div>
 
                 </div>
 
 
-                <!-- MESSAGE -->
-
-                <div
-                    id="registerMessage"
-                    class="auth-message"
-                    role="alert"
-                    aria-live="polite"
-                ></div>
-
-
-                <!-- REGISTRATION FORM -->
+                <!-- Registration form -->
 
                 <form
                     id="registerForm"
                     novalidate
                 >
 
-                    <!-- FULL NAME -->
+                    <!-- Full name -->
 
                     <div class="form-group">
 
@@ -215,7 +174,7 @@
                     </div>
 
 
-                    <!-- EMAIL -->
+                    <!-- Email -->
 
                     <div class="form-group">
 
@@ -227,7 +186,7 @@
                             type="email"
                             id="email"
                             name="email"
-                            placeholder="you@example.com"
+                            placeholder="Enter your email address"
                             autocomplete="email"
                             required
                         >
@@ -235,7 +194,7 @@
                     </div>
 
 
-                    <!-- PASSWORD -->
+                    <!-- Password -->
 
                     <div class="form-group">
 
@@ -243,7 +202,7 @@
                             Password
                         </label>
 
-                        <div class="password-wrapper">
+                        <div class="password-field">
 
                             <input
                                 type="password"
@@ -251,13 +210,14 @@
                                 name="password"
                                 placeholder="Create a password"
                                 autocomplete="new-password"
+                                minlength="6"
                                 required
                             >
 
                             <button
                                 type="button"
-                                class="password-toggle"
                                 id="passwordToggle"
+                                class="password-toggle"
                                 aria-label="Show password"
                             >
                                 👁
@@ -265,14 +225,14 @@
 
                         </div>
 
-                        <small class="field-help">
+                        <small class="input-hint">
                             Use at least 6 characters.
                         </small>
 
                     </div>
 
 
-                    <!-- CONFIRM PASSWORD -->
+                    <!-- Confirm password -->
 
                     <div class="form-group">
 
@@ -280,7 +240,7 @@
                             Confirm password
                         </label>
 
-                        <div class="password-wrapper">
+                        <div class="password-field">
 
                             <input
                                 type="password"
@@ -288,13 +248,14 @@
                                 name="confirmPassword"
                                 placeholder="Enter your password again"
                                 autocomplete="new-password"
+                                minlength="6"
                                 required
                             >
 
                             <button
                                 type="button"
-                                class="password-toggle"
                                 id="confirmPasswordToggle"
+                                class="password-toggle"
                                 aria-label="Show password"
                             >
                                 👁
@@ -305,70 +266,83 @@
                     </div>
 
 
-                    <!-- EDUCATIONAL USE -->
+                    <!-- Educational use -->
 
-                    <label class="checkbox-label registration-check">
+                    <label class="checkbox-row">
 
                         <input
                             type="checkbox"
                             id="educationalUse"
+                            name="educationalUse"
                             required
                         >
 
                         <span>
-                            I am creating this account
-                            for educational use.
+                            I am creating this account for educational use.
                         </span>
 
                     </label>
 
 
-                    <!-- SUBMIT -->
+                    <!-- Firebase message -->
+
+                    <div
+                        id="registerMessage"
+                        class="auth-message"
+                        role="alert"
+                        aria-live="polite"
+                    ></div>
+
+
+                    <!-- Submit button -->
 
                     <button
                         type="submit"
-                        class="primary-button auth-submit"
                         id="registerButton"
+                        class="auth-submit"
                     >
                         Create Student Account
                     </button>
 
+
+                    <!-- Login link -->
+
+                    <div class="auth-switch">
+
+                        <span>
+                            Already have an account?
+                        </span>
+
+                        <a href="login.html?role=student">
+                            Sign in
+                        </a>
+
+                    </div>
+
+
+                    <!-- Security note -->
+
+                    <div class="security-note">
+
+                        🔒
+
+                        <span>
+                            Your password is securely managed by Firebase Authentication.
+                        </span>
+
+                    </div>
+
                 </form>
 
+            </section>
 
-                <!-- LOGIN LINK -->
-
-                <div class="register-prompt">
-
-                    <span>
-                        Already have an account?
-                    </span>
-
-                    <a href="login.html?role=student">
-                        Sign in
-                    </a>
-
-                </div>
-
-
-                <!-- SECURITY -->
-
-                <div class="security-note">
-
-                    🔒 Your password is securely
-                    managed by Firebase Authentication.
-
-                </div>
-
-            </div>
-
-        </section>
+        </div>
 
     </main>
 
 
     <!-- =========================================
-         FIREBASE SDK
+         FIREBASE
     ========================================== -->
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -378,9 +352,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <script src="firebase.js"></script>
-
-
-    <!-- REGISTRATION JAVASCRIPT -->
 
     <script src="register.js?v=3"></script>
 
