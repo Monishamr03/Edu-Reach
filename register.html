@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
 
@@ -17,9 +18,10 @@
 
     <link
         rel="stylesheet"
-        href="style.css?v=3"
+        href="style.css?v=4"
     >
 </head>
+
 
 <body>
 
@@ -31,6 +33,7 @@
 
         <div class="auth-layout">
 
+
             <!-- =================================
                  LEFT INFORMATION SECTION
             ================================== -->
@@ -41,13 +44,16 @@
                     EduReach
                 </div>
 
+
                 <div class="auth-badge">
                     🎓 Student Registration
                 </div>
 
+
                 <h1>
                     Start your learning journey.
                 </h1>
+
 
                 <p class="auth-intro-text">
                     Create your free EduReach student account
@@ -64,6 +70,7 @@
                     </div>
 
                     <div>
+
                         <h3>
                             Access learning content
                         </h3>
@@ -71,6 +78,7 @@
                         <p>
                             Courses, lessons, videos, audio and quizzes.
                         </p>
+
                     </div>
 
                 </div>
@@ -85,6 +93,7 @@
                     </div>
 
                     <div>
+
                         <h3>
                             Earn XP and achievements
                         </h3>
@@ -92,6 +101,7 @@
                         <p>
                             Build your learning streak as you progress.
                         </p>
+
                     </div>
 
                 </div>
@@ -106,6 +116,7 @@
                     </div>
 
                     <div>
+
                         <h3>
                             Learn and grow
                         </h3>
@@ -113,6 +124,7 @@
                         <p>
                             Designed to support accessible STEM education.
                         </p>
+
                     </div>
 
                 </div>
@@ -120,11 +132,13 @@
             </section>
 
 
+
             <!-- =================================
                  REGISTRATION CARD
             ================================== -->
 
             <section class="auth-card">
+
 
                 <!-- Account type -->
 
@@ -135,6 +149,7 @@
                     </div>
 
                     <div>
+
                         <span>
                             ACCOUNT TYPE
                         </span>
@@ -142,17 +157,22 @@
                         <strong>
                             Student
                         </strong>
+
                     </div>
 
                 </div>
 
 
-                <!-- Registration form -->
+
+                <!-- =================================
+                     REGISTRATION FORM
+                ================================== -->
 
                 <form
                     id="registerForm"
                     novalidate
                 >
+
 
                     <!-- Full name -->
 
@@ -172,6 +192,7 @@
                         >
 
                     </div>
+
 
 
                     <!-- Email -->
@@ -194,6 +215,7 @@
                     </div>
 
 
+
                     <!-- Password -->
 
                     <div class="form-group">
@@ -201,6 +223,7 @@
                         <label for="password">
                             Password
                         </label>
+
 
                         <div class="password-field">
 
@@ -214,6 +237,7 @@
                                 required
                             >
 
+
                             <button
                                 type="button"
                                 id="passwordToggle"
@@ -225,11 +249,13 @@
 
                         </div>
 
+
                         <small class="input-hint">
                             Use at least 6 characters.
                         </small>
 
                     </div>
+
 
 
                     <!-- Confirm password -->
@@ -239,6 +265,7 @@
                         <label for="confirmPassword">
                             Confirm password
                         </label>
+
 
                         <div class="password-field">
 
@@ -251,6 +278,7 @@
                                 minlength="6"
                                 required
                             >
+
 
                             <button
                                 type="button"
@@ -266,9 +294,13 @@
                     </div>
 
 
+
                     <!-- Educational use -->
 
-                    <label class="checkbox-row">
+                    <label
+                        class="checkbox-row"
+                        for="educationalUse"
+                    >
 
                         <input
                             type="checkbox"
@@ -284,6 +316,7 @@
                     </label>
 
 
+
                     <!-- Firebase message -->
 
                     <div
@@ -294,15 +327,39 @@
                     ></div>
 
 
-                    <!-- Submit button -->
+
+                    <!-- =================================
+                         CREATE ACCOUNT BUTTON
+                    ================================== -->
 
                     <button
                         type="submit"
                         id="registerButton"
                         class="auth-submit"
+                        style="
+                            display: block;
+                            width: 100%;
+                            min-height: 52px;
+                            padding: 15px 20px;
+                            margin-top: 18px;
+                            border: none;
+                            border-radius: 12px;
+                            background: #6D5DFC;
+                            color: #ffffff;
+                            font-family: inherit;
+                            font-size: 16px;
+                            font-weight: 700;
+                            line-height: 1.2;
+                            text-align: center;
+                            cursor: pointer;
+                            box-sizing: border-box;
+                            appearance: none;
+                            -webkit-appearance: none;
+                        "
                     >
                         Create Student Account
                     </button>
+
 
 
                     <!-- Login link -->
@@ -318,6 +375,7 @@
                         </a>
 
                     </div>
+
 
 
                     <!-- Security note -->
@@ -341,6 +399,7 @@
     </main>
 
 
+
     <!-- =========================================
          FIREBASE
     ========================================== -->
@@ -356,4 +415,5 @@
     <script src="register.js?v=3"></script>
 
 </body>
+
 </html>
