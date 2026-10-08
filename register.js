@@ -1,450 +1,421 @@
 /* =========================================
    EDUREACH
    Student Registration
+   Step 4A - Firebase Authentication
 ========================================= */
 
+document.addEventListener("DOMContentLoaded", function () {
 
-/*
-    ========================================
-    SHOW MESSAGE
-    ========================================
-*/
+    const registerForm =
+        document.getElementById("registerForm");
 
-function showRegistrationMessage(
-    type,
-    message
-) {
+    const fullNameInput =
+        document.getElementById("fullName");
 
-    const messageBox =
-        document.getElementById(
-            "registrationMessage"
-        );
-
-
-    messageBox.hidden = false;
-
-    messageBox.className =
-        "form-message " + type;
-
-    messageBox.textContent =
-        message;
-}
-
-
-/*
-    ========================================
-    HIDE MESSAGE
-    ========================================
-*/
-
-function hideRegistrationMessage() {
-
-    const messageBox =
-        document.getElementById(
-            "registrationMessage"
-        );
-
-
-    messageBox.hidden = true;
-
-    messageBox.textContent = "";
-
-}
-
-
-/*
-    ========================================
-    PASSWORD TOGGLE
-    ========================================
-*/
-
-function initializePasswordToggle(
-    inputId,
-    buttonId
-) {
+    const emailInput =
+        document.getElementById("email");
 
     const passwordInput =
-        document.getElementById(
-            inputId
-        );
+        document.getElementById("password");
+
+    const confirmPasswordInput =
+        document.getElementById("confirmPassword");
+
+    const educationalUse =
+        document.getElementById("educationalUse");
+
+    const passwordToggle =
+        document.getElementById("passwordToggle");
+
+    const confirmPasswordToggle =
+        document.getElementById("confirmPasswordToggle");
+
+    const registerMessage =
+        document.getElementById("registerMessage");
+
+    const registerButton =
+        document.getElementById("registerButton");
 
 
-    const toggleButton =
-        document.getElementById(
-            buttonId
-        );
+    /* =========================================
+       MESSAGE
+    ========================================== */
 
+    function showMessage(message, type = "error") {
 
-    if (
-        !passwordInput ||
-        !toggleButton
-    ) {
-        return;
+        registerMessage.textContent = message;
+
+        registerMessage.className =
+            "auth-message " + type;
     }
 
 
-    toggleButton.addEventListener(
+    function clearMessage() {
+
+        registerMessage.textContent = "";
+
+        registerMessage.className =
+            "auth-message";
+    }
+
+
+    /* =========================================
+       LOADING STATE
+    ========================================== */
+
+    function setLoading(isLoading) {
+
+        registerButton.disabled = isLoading;
+
+        if (isLoading) {
+
+            registerButton.textContent =
+                "Creating account...";
+
+        } else {
+
+            registerButton.textContent =
+                "Create Student Account";
+
+        }
+    }
+
+
+    /* =========================================
+       PASSWORD SHOW / HIDE
+    ========================================== */
+
+    passwordToggle.addEventListener(
         "click",
-        function() {
+        function () {
 
-            const showingPassword =
-                passwordInput.type ===
-                "text";
+            const isHidden =
+                passwordInput.type === "password";
 
+            passwordInput.type =
+                isHidden
+                    ? "text"
+                    : "password";
 
-            if (showingPassword) {
+            passwordToggle.textContent =
+                isHidden
+                    ? "🙈"
+                    : "👁";
 
-                passwordInput.type =
-                    "password";
-
-                toggleButton.textContent =
-                    "👁";
-
-            } else {
-
-                passwordInput.type =
-                    "text";
-
-                toggleButton.textContent =
-                    "🙈";
-
-            }
-
+            passwordToggle.setAttribute(
+                "aria-label",
+                isHidden
+                    ? "Hide password"
+                    : "Show password"
+            );
         }
     );
 
-}
+
+    /* =========================================
+       CONFIRM PASSWORD SHOW / HIDE
+    ========================================== */
+
+    confirmPasswordToggle.addEventListener(
+        "click",
+        function () {
+
+            const isHidden =
+                confirmPasswordInput.type === "password";
+
+            confirmPasswordInput.type =
+                isHidden
+                    ? "text"
+                    : "password";
+
+            confirmPasswordToggle.textContent =
+                isHidden
+                    ? "🙈"
+                    : "👁";
+
+            confirmPasswordToggle.setAttribute(
+                "aria-label",
+                isHidden
+                    ? "Hide password"
+                    : "Show password"
+            );
+        }
+    );
 
 
-/*
-    ========================================
-    PASSWORD VALIDATION
-    ========================================
-*/
+    /* =========================================
+       FORM SUBMISSION
+    ========================================== */
 
-function validatePassword(password) {
-
-    if (password.length < 6) {
-
-        return {
-            valid: false,
-            message:
-                "Password must contain at least 6 characters."
-        };
-
-    }
-
-
-    return {
-        valid: true,
-        message: ""
-    };
-
-}
-
-
-/*
-    ========================================
-    EMAIL VALIDATION
-    ========================================
-*/
-
-function validateEmail(email) {
-
-    const emailPattern =
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-
-    return emailPattern.test(email);
-
-}
-
-
-/*
-    ========================================
-    REGISTRATION FORM
-    ========================================
-*/
-
-function initializeRegistrationForm() {
-
-    const form =
-        document.getElementById(
-            "registrationForm"
-        );
-
-
-    const registerButton =
-        document.getElementById(
-            "registerButton"
-        );
-
-
-    if (!form) {
-        return;
-    }
-
-
-    form.addEventListener(
+    registerForm.addEventListener(
         "submit",
-        function(event) {
-
-            /*
-                Prevent the browser from
-                refreshing the page.
-            */
+        async function (event) {
 
             event.preventDefault();
 
+            clearMessage();
 
-            hideRegistrationMessage();
 
-
-            /*
-                --------------------------------
-                GET FORM VALUES
-                --------------------------------
-            */
+            /* =====================================
+               GET FORM VALUES
+            ====================================== */
 
             const fullName =
-                document.getElementById(
-                    "fullName"
-                ).value.trim();
-
+                fullNameInput.value.trim();
 
             const email =
-                document.getElementById(
-                    "registerEmail"
-                ).value.trim();
-
+                emailInput.value.trim();
 
             const password =
-                document.getElementById(
-                    "registerPassword"
-                ).value;
-
+                passwordInput.value;
 
             const confirmPassword =
-                document.getElementById(
-                    "confirmPassword"
-                ).value;
+                confirmPasswordInput.value;
 
 
-            const terms =
-                document.getElementById(
-                    "terms"
-                ).checked;
-
-
-            /*
-                --------------------------------
-                NAME VALIDATION
-                --------------------------------
-            */
+            /* =====================================
+               VALIDATION
+            ====================================== */
 
             if (fullName.length < 2) {
 
-                showRegistrationMessage(
-                    "error",
+                showMessage(
                     "Please enter your full name."
                 );
 
+                fullNameInput.focus();
+
                 return;
             }
 
 
-            /*
-                --------------------------------
-                EMAIL VALIDATION
-                --------------------------------
-            */
+            if (!isValidEmail(email)) {
 
-            if (!validateEmail(email)) {
-
-                showRegistrationMessage(
-                    "error",
+                showMessage(
                     "Please enter a valid email address."
                 );
 
-                return;
-            }
-
-
-            /*
-                --------------------------------
-                PASSWORD VALIDATION
-                --------------------------------
-            */
-
-            const passwordResult =
-                validatePassword(
-                    password
-                );
-
-
-            if (!passwordResult.valid) {
-
-                showRegistrationMessage(
-                    "error",
-                    passwordResult.message
-                );
+                emailInput.focus();
 
                 return;
             }
 
 
-            /*
-                --------------------------------
-                PASSWORD MATCH
-                --------------------------------
-            */
+            if (password.length < 6) {
 
-            if (
-                password !==
-                confirmPassword
-            ) {
+                showMessage(
+                    "Password must contain at least 6 characters."
+                );
 
-                showRegistrationMessage(
-                    "error",
+                passwordInput.focus();
+
+                return;
+            }
+
+
+            if (password !== confirmPassword) {
+
+                showMessage(
                     "Passwords do not match."
                 );
 
+                confirmPasswordInput.focus();
+
                 return;
             }
 
 
-            /*
-                --------------------------------
-                TERMS
-                --------------------------------
-            */
+            if (!educationalUse.checked) {
 
-            if (!terms) {
-
-                showRegistrationMessage(
-                    "error",
-                    "Please accept the educational use agreement to continue."
+                showMessage(
+                    "Please confirm that this account is for educational use."
                 );
 
+                educationalUse.focus();
+
                 return;
             }
 
 
-            /*
-                --------------------------------
-                TEMPORARY TEST STATE
-                --------------------------------
+            /* =====================================
+               START LOADING
+            ====================================== */
 
-                Firebase will replace this
-                section in the next stage.
-
-                We do NOT create a fake account
-                or pretend registration succeeded.
-            */
-
-            registerButton.disabled = true;
-
-            registerButton.style.opacity =
-                "0.7";
-
-            registerButton.style.cursor =
-                "wait";
+            setLoading(true);
 
 
-            registerButton.innerHTML = `
-                <span>
-                    Checking details...
-                </span>
-                <span>
-                    ...
-                </span>
-            `;
+            try {
+
+                /* =================================
+                   CREATE FIREBASE AUTH ACCOUNT
+                ================================== */
+
+                const userCredential =
+                    await eduReachAuth
+                        .createUserWithEmailAndPassword(
+                            email,
+                            password
+                        );
 
 
-            setTimeout(
-                function() {
-
-                    registerButton.disabled =
-                        false;
-
-                    registerButton.style.opacity =
-                        "";
-
-                    registerButton.style.cursor =
-                        "";
-
-                    registerButton.innerHTML = `
-                        <span>
-                            Create student account
-                        </span>
-                        <span>
-                            →
-                        </span>
-                    `;
+                const user =
+                    userCredential.user;
 
 
-                    showRegistrationMessage(
-                        "info",
-                        "Your details are valid. Firebase account creation will be connected next."
-                    );
+                /* =================================
+                   SAVE DISPLAY NAME
+                ================================== */
+
+                await user.updateProfile({
+
+                    displayName: fullName
+
+                });
 
 
-                    console.log(
-                        "Registration form validated:",
-                        {
-                            fullName:
-                                fullName,
-                            email:
-                                email,
-                            passwordProvided:
-                                password.length > 0,
-                            termsAccepted:
-                                terms
-                        }
-                    );
+                /* =================================
+                   CREATE FIRESTORE USER PROFILE
+                ================================== */
 
-                },
-                500
-            );
+                await eduReachDB
+                    .collection("users")
+                    .doc(user.uid)
+                    .set({
+
+                        name: fullName,
+
+                        email: email,
+
+                        role: "student",
+
+                        photo: "",
+
+                        xp: 0,
+
+                        level: 1,
+
+                        streak: 0,
+
+                        createdAt:
+                            firebase.firestore
+                                .FieldValue
+                                .serverTimestamp()
+
+                    });
+
+
+                /* =================================
+                   SUCCESS
+                ================================== */
+
+                showMessage(
+                    "Your student account has been created successfully!",
+                    "success"
+                );
+
+
+                /* =================================
+                   SIGN OUT
+                   The user will log in normally
+                   from the login page.
+                ================================== */
+
+                await eduReachAuth.signOut();
+
+
+                /* =================================
+                   REDIRECT TO STUDENT LOGIN
+                ================================== */
+
+                setTimeout(
+                    function () {
+
+                        window.location.href =
+                            "login.html?role=student";
+
+                    },
+                    1200
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "EduReach registration error:",
+                    error
+                );
+
+
+                /* =================================
+                   FIREBASE ERROR MESSAGES
+                ================================== */
+
+                let message =
+                    "Unable to create your account. Please try again.";
+
+
+                switch (error.code) {
+
+                    case "auth/email-already-in-use":
+
+                        message =
+                            "An account already exists with this email address.";
+
+                        break;
+
+
+                    case "auth/invalid-email":
+
+                        message =
+                            "Please enter a valid email address.";
+
+                        break;
+
+
+                    case "auth/weak-password":
+
+                        message =
+                            "Your password is too weak. Please use at least 6 characters.";
+
+                        break;
+
+
+                    case "auth/operation-not-allowed":
+
+                        message =
+                            "Email/password authentication is not enabled in Firebase.";
+
+                        break;
+
+
+                    case "auth/network-request-failed":
+
+                        message =
+                            "Network connection failed. Please check your internet connection.";
+
+                        break;
+
+                }
+
+
+                showMessage(message);
+
+                setLoading(false);
+            }
 
         }
     );
 
-}
 
+    /* =========================================
+       EMAIL VALIDATION
+    ========================================== */
 
-/*
-    ========================================
-    INITIALIZE PAGE
-    ========================================
-*/
+    function isValidEmail(email) {
 
-function initializeRegistrationPage() {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+            .test(email);
 
-    initializePasswordToggle(
-        "registerPassword",
-        "toggleRegisterPassword"
-    );
+    }
 
-
-    initializePasswordToggle(
-        "confirmPassword",
-        "toggleConfirmPassword"
-    );
-
-
-    initializeRegistrationForm();
-
-}
-
-
-/*
-    ========================================
-    START
-    ========================================
-*/
-
-document.addEventListener(
-    "DOMContentLoaded",
-    initializeRegistrationPage
-);
+});
