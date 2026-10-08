@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="EduReach secure login"
+    >
+
+    <title>Login | EduReach</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+<body class="auth-page">
+
+
+    <!-- =====================================
+         AUTH HEADER
+    ====================================== -->
+
+    <header class="site-header">
+
+        <div class="container header-inner">
+
+            <a
+                href="index.html"
+                class="brand"
+            >
+
+                <div class="brand-icon">
+                    E
+                </div>
+
+
+                <div class="brand-text">
+
+                    <span class="brand-name">
+                        EduReach
+                    </span>
+
+                    <span class="brand-tagline">
+                        Learn Without Limits
+                    </span>
+
+                </div>
+
+            </a>
+
+
+            <a
+                href="index.html"
+                class="back-home"
+            >
+                ← Back to home
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================
+         LOGIN SECTION
+    ====================================== -->
+
+    <main class="auth-main">
+
+        <div class="auth-container">
+
+
+            <!-- =================================
+                 LEFT INFORMATION
+            ================================== -->
+
+            <section class="auth-intro">
+
+                <div class="auth-badge">
+                    <span>✦</span>
+                    Welcome back
+                </div>
+
+
+                <h1>
+                    Continue your
+                    <span>
+                        learning journey.
+                    </span>
+                </h1>
+
+
+                <p>
+                    Sign in to access your EduReach
+                    learning experience, courses,
+                    progress and achievements.
+                </p>
+
+
+                <div class="auth-highlights">
+
+
+                    <div class="auth-highlight">
+
+                        <div class="highlight-icon">
+                            📚
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Your learning space
+                            </strong>
+
+                            <span>
+                                Access your courses and lessons.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="auth-highlight">
+
+                        <div class="highlight-icon">
+                            📈
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Track your progress
+                            </strong>
+
+                            <span>
+                                Continue where you left off.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="auth-highlight">
+
+                        <div class="highlight-icon">
+                            🏆
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                Keep achieving
+                            </strong>
+
+                            <span>
+                                Earn XP, badges and milestones.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- =================================
+                 LOGIN CARD
+            ================================== -->
+
+            <section class="auth-card">
+
+
+                <div class="auth-card-header">
+
+                    <div class="auth-card-icon">
+                        🔐
+                    </div>
+
+
+                    <div>
+
+                        <p class="card-label">
+                            SECURE LOGIN
+                        </p>
+
+                        <h2 id="loginTitle">
+                            Sign in
+                        </h2>
+
+                        <p id="loginSubtitle">
+                            Enter your account details to continue.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ROLE INDICATOR -->
+
+                <div class="selected-role">
+
+                    <span class="selected-role-icon">
+                        🎓
+                    </span>
+
+                    <div>
+
+                        <span>
+                            Signing in as
+                        </span>
+
+                        <strong id="selectedRole">
+                            Student
+                        </strong>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        id="changeRoleButton"
+                    >
+                        Change
+                    </button>
+
+                </div>
+
+
+
+                <!-- LOGIN FORM -->
+
+                <form
+                    id="loginForm"
+                    class="auth-form"
+                >
+
+
+                    <!-- EMAIL -->
+
+                    <div class="form-group">
+
+                        <label for="email">
+                            Email address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- PASSWORD -->
+
+                    <div class="form-group">
+
+                        <div class="form-label-row">
+
+                            <label for="password">
+                                Password
+                            </label>
+
+                            <a
+                                href="#"
+                                id="forgotPassword"
+                            >
+                                Forgot password?
+                            </a>
+
+                        </div>
+
+
+                        <div class="password-field">
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Enter your password"
+                                autocomplete="current-password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                id="togglePassword"
+                                class="password-toggle"
+                                aria-label="Show password"
+                            >
+                                👁
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- REMEMBER -->
+
+                    <label class="checkbox-row">
+
+                        <input
+                            type="checkbox"
+                            id="rememberMe"
+                        >
+
+                        <span>
+                            Remember me on this device
+                        </span>
+
+                    </label>
+
+
+
+                    <!-- ERROR MESSAGE -->
+
+                    <div
+                        id="loginMessage"
+                        class="form-message"
+                        hidden
+                    ></div>
+
+
+
+                    <!-- LOGIN BUTTON -->
+
+                    <button
+                        type="submit"
+                        class="primary-auth-button"
+                        id="loginButton"
+                    >
+
+                        <span>
+                            Sign in
+                        </span>
+
+                        <span>
+                            →
+                        </span>
+
+                    </button>
+
+
+                </form>
+
+
+
+                <!-- STUDENT REGISTRATION -->
+
+                <div
+                    class="register-prompt"
+                    id="studentRegisterPrompt"
+                >
+
+                    <span>
+                        Don't have a student account?
+                    </span>
+
+                    <a href="register.html">
+                        Create one
+                    </a>
+
+                </div>
+
+
+
+                <!-- SECURITY NOTE -->
+
+                <div class="auth-security">
+
+                    <span>
+                        🔒
+                    </span>
+
+                    <span>
+                        Your account is protected by secure authentication.
+                    </span>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- =====================================
+         LOGIN JAVASCRIPT
+    ====================================== -->
+
+    <script src="login.js"></script>
+
+</body>
+
+</html>
