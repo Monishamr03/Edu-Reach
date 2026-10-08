@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="EduReach - Accessible STEM learning for everyone."
+    >
+
+    <title>EduReach | Learn Without Limits</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+    <header class="site-header">
+
+        <div class="container header-inner">
+
+            <a href="#" class="brand">
+                <div class="brand-icon">E</div>
+
+                <div class="brand-text">
+                    <span class="brand-name">EduReach</span>
+                    <span class="brand-tagline">Learn Without Limits</span>
+                </div>
+            </a>
+
+            <div class="header-status">
+                <span class="status-dot"></span>
+                <span>Learning made accessible</span>
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+    <main>
+
+        <!-- HERO / WELCOME -->
+        <section class="hero-section">
+
+            <div class="container hero-container">
+
+                <div class="hero-content">
+
+                    <div class="eyebrow">
+                        <span>✦</span>
+                        STEM education for everyone
+                    </div>
+
+                    <h1>
+                        Your learning journey
+                        <span>starts here.</span>
+                    </h1>
+
+                    <p class="hero-description">
+                        EduReach brings quality STEM education closer to
+                        students and educators with lightweight,
+                        accessible and engaging learning experiences.
+                    </p>
+
+                    <div class="hero-features">
+
+                        <div class="feature-item">
+                            <span class="feature-icon">📚</span>
+                            <span>Learn at your pace</span>
+                        </div>
+
+                        <div class="feature-item">
+                            <span class="feature-icon">📱</span>
+                            <span>Works with limited connectivity</span>
+                        </div>
+
+                        <div class="feature-item">
+                            <span class="feature-icon">🏆</span>
+                            <span>Grow through achievements</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ROLE SELECTION CARD -->
+                <div class="role-card">
+
+                    <div class="role-card-header">
+
+                        <div class="welcome-icon">
+                            👋
+                        </div>
+
+                        <div>
+                            <p class="card-label">WELCOME TO EDUREACH</p>
+
+                            <h2>
+                                How would you like to continue?
+                            </h2>
+
+                            <p>
+                                Select your role to sign in.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="role-options">
+
+                        <!-- STUDENT -->
+                        <button
+                            class="role-option"
+                            type="button"
+                            onclick="selectRole('student')"
+                        >
+
+                            <div class="role-icon student-icon">
+                                🎓
+                            </div>
+
+                            <div class="role-info">
+                                <strong>Student</strong>
+
+                                <span>
+                                    Learn, practice and track your progress
+                                </span>
+                            </div>
+
+                            <span class="role-arrow">→</span>
+
+                        </button>
+
+
+                        <!-- TEACHER -->
+                        <button
+                            class="role-option"
+                            type="button"
+                            onclick="selectRole('teacher')"
+                        >
+
+                            <div class="role-icon teacher-icon">
+                                👨‍🏫
+                            </div>
+
+                            <div class="role-info">
+                                <strong>Teacher</strong>
+
+                                <span>
+                                    Create courses and guide learners
+                                </span>
+                            </div>
+
+                            <span class="role-arrow">→</span>
+
+                        </button>
+
+
+                        <!-- ADMIN -->
+                        <button
+                            class="role-option"
+                            type="button"
+                            onclick="selectRole('admin')"
+                        >
+
+                            <div class="role-icon admin-icon">
+                                ⚙️
+                            </div>
+
+                            <div class="role-info">
+                                <strong>Administrator</strong>
+
+                                <span>
+                                    Manage the EduReach platform
+                                </span>
+                            </div>
+
+                            <span class="role-arrow">→</span>
+
+                        </button>
+
+                    </div>
+
+
+                    <div class="role-card-footer">
+
+                        <span class="security-icon">🔒</span>
+
+                        <span>
+                            Secure sign-in powered by Firebase
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             TRUST / BENEFITS
+        ========================== -->
+        <section class="benefits-section">
+
+            <div class="container">
+
+                <div class="section-heading">
+
+                    <span class="section-kicker">
+                        WHY EDUREACH?
+                    </span>
+
+                    <h2>
+                        Learning designed around real needs.
+                    </h2>
+
+                </div>
+
+
+                <div class="benefit-grid">
+
+                    <article class="benefit-card">
+
+                        <div class="benefit-icon">
+                            📶
+                        </div>
+
+                        <h3>
+                            Lightweight
+                        </h3>
+
+                        <p>
+                            Designed to provide useful learning
+                            experiences even with limited internet
+                            connectivity.
+                        </p>
+
+                    </article>
+
+
+                    <article class="benefit-card">
+
+                        <div class="benefit-icon">
+                            🎧
+                        </div>
+
+                        <h3>
+                            Multiple ways to learn
+                        </h3>
+
+                        <p>
+                            Learn through lessons, audio, slides,
+                            videos and interactive quizzes.
+                        </p>
+
+                    </article>
+
+
+                    <article class="benefit-card">
+
+                        <div class="benefit-icon">
+                            📈
+                        </div>
+
+                        <h3>
+                            Track your growth
+                        </h3>
+
+                        <p>
+                            Monitor learning progress and build
+                            achievements as you move forward.
+                        </p>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+    <footer class="site-footer">
+
+        <div class="container footer-inner">
+
+            <div>
+                <strong>EduReach</strong>
+
+                <span>
+                    &nbsp;•&nbsp; STEM education without limits.
+                </span>
+            </div>
+
+            <div>
+                © 2026 EduReach
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!-- =========================
+         TEMPORARY ROLE HANDLER
+         
+         Firebase authentication will
+         replace this later.
+    ========================== -->
+    <script>
+
+        function selectRole(role) {
+
+            console.log("Selected role:", role);
+
+            alert(
+                "EduReach " +
+                role.charAt(0).toUpperCase() +
+                role.slice(1) +
+                " login will be connected in the next step."
+            );
+
+        }
+
+    </script>
+
+</body>
+</html>
