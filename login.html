@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -8,165 +10,285 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>EduReach - Login</title>
+    <meta
+        name="description"
+        content="Sign in to your EduReach learning account."
+    >
 
-    <link rel="stylesheet" href="style.css?v=3">
+    <title>Sign In | EduReach</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css?v=6"
+    >
+
+    <style>
+
+        /* =========================================
+           LOGIN BUTTON
+        ========================================== */
+
+        #loginButton {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+
+            width: 100% !important;
+            min-height: 52px !important;
+
+            margin-top: 20px !important;
+            padding: 15px 20px !important;
+
+            border: 0 !important;
+            border-radius: 12px !important;
+
+            background: #6D5DFC !important;
+            color: #ffffff !important;
+
+            font-family: inherit !important;
+            font-size: 16px !important;
+            font-weight: 700 !important;
+
+            line-height: 1.2 !important;
+            text-align: center !important;
+
+            cursor: pointer !important;
+
+            box-sizing: border-box !important;
+
+            appearance: none !important;
+            -webkit-appearance: none !important;
+
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+
+        #loginButton:hover {
+            background: #5144D9 !important;
+        }
+
+
+        #loginButton:active {
+            transform: translateY(1px);
+        }
+
+
+        #loginButton:disabled {
+            opacity: 0.65 !important;
+            cursor: not-allowed !important;
+        }
+
+
+        /* =========================================
+           LOGIN MESSAGE
+        ========================================== */
+
+        #authMessage {
+            display: block;
+            width: 100%;
+            margin-top: 14px;
+        }
+
+
+        /* =========================================
+           PASSWORD TOGGLE
+        ========================================== */
+
+        .password-toggle {
+            cursor: pointer !important;
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
-    <header class="site-header">
 
-        <div class="brand">
+    <!-- =========================================
+         HEADER
+    ========================================== -->
 
-            <div class="brand-mark">
-                E
-            </div>
+    <header class="auth-header">
 
-            <div>
-                <h1>EduReach</h1>
-                <span>Learn. Grow. Reach Further.</span>
-            </div>
+        <div class="auth-header-inner">
+
+            <a
+                href="index.html"
+                class="auth-logo"
+            >
+                EduReach
+            </a>
+
+
+            <a
+                href="index.html"
+                class="back-link"
+            >
+                ← Back to Home
+            </a>
 
         </div>
-
-        <a href="index.html" class="back-home">
-            ← Back to Home
-        </a>
 
     </header>
 
 
+
+    <!-- =========================================
+         MAIN LOGIN PAGE
+    ========================================== -->
+
     <main class="auth-page">
 
-        <section class="auth-container">
+        <div class="auth-layout">
 
 
-            <!-- LEFT SIDE -->
+            <!-- =================================
+                 LEFT SIDE
+            ================================== -->
 
-            <div class="auth-intro">
+            <section class="auth-intro">
+
 
                 <div class="auth-badge">
-                    ✨ Welcome back
+                    🔐 Secure Sign In
                 </div>
 
-                <h2>
-                    Continue your
-                    <span>learning journey.</span>
-                </h2>
 
-                <p>
-                    Sign in to access your EduReach
-                    learning environment and continue
-                    where you left off.
+                <h1>
+                    Welcome back.
+                </h1>
+
+
+                <p class="auth-intro-text">
+                    Sign in to continue your EduReach
+                    learning journey.
                 </p>
 
-                <div class="auth-benefits">
 
-                    <div class="benefit-item">
 
-                        <div class="benefit-icon">
-                            📚
-                        </div>
+                <!-- Feature 1 -->
 
-                        <div>
-                            <strong>
-                                Learn at your pace
-                            </strong>
+                <div class="auth-feature">
 
-                            <p>
-                                Access courses, lessons
-                                and quizzes.
-                            </p>
-                        </div>
-
+                    <div class="feature-icon">
+                        📚
                     </div>
 
+                    <div>
 
-                    <div class="benefit-item">
+                        <h3>
+                            Continue learning
+                        </h3>
 
-                        <div class="benefit-icon">
-                            🏆
-                        </div>
-
-                        <div>
-                            <strong>
-                                Track your progress
-                            </strong>
-
-                            <p>
-                                Build XP, streaks and
-                                achievements.
-                            </p>
-                        </div>
-
-                    </div>
-
-
-                    <div class="benefit-item">
-
-                        <div class="benefit-icon">
-                            📶
-                        </div>
-
-                        <div>
-                            <strong>
-                                Designed for accessibility
-                            </strong>
-
-                            <p>
-                                Lightweight learning for
-                                low-connectivity areas.
-                            </p>
-                        </div>
+                        <p>
+                            Pick up your courses and lessons
+                            where you left off.
+                        </p>
 
                     </div>
 
                 </div>
 
-            </div>
 
 
-            <!-- RIGHT SIDE -->
+                <!-- Feature 2 -->
 
-            <div class="auth-card">
+                <div class="auth-feature">
 
-                <div class="auth-card-header">
+                    <div class="feature-icon">
+                        ⭐
+                    </div>
 
-                    <div
-                        class="role-icon"
-                        id="roleIcon"
-                    >
+                    <div>
+
+                        <h3>
+                            Track your progress
+                        </h3>
+
+                        <p>
+                            Keep your XP, achievements
+                            and learning streak.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Feature 3 -->
+
+                <div class="auth-feature">
+
+                    <div class="feature-icon">
+                        🔒
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Secure account
+                        </h3>
+
+                        <p>
+                            Your account is protected by
+                            Firebase Authentication.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+            </section>
+
+
+
+            <!-- =================================
+                 LOGIN CARD
+            ================================== -->
+
+            <section class="auth-card">
+
+
+                <!-- Account type -->
+
+                <div class="account-type">
+
+                    <div class="account-type-icon">
                         🎓
                     </div>
 
                     <div>
 
-                        <p class="small-label">
-                            SIGNING IN AS
-                        </p>
+                        <span>
+                            ACCOUNT TYPE
+                        </span>
 
-                        <h3 id="roleTitle">
+                        <strong id="roleTitle">
                             Student
-                        </h3>
+                        </strong>
 
                     </div>
 
                 </div>
 
 
-                <div
-                    id="authMessage"
-                    class="auth-message"
-                    role="alert"
-                    aria-live="polite"
-                ></div>
 
+                <!-- =================================
+                     LOGIN FORM
+                ================================== -->
 
                 <form
                     id="loginForm"
                     novalidate
                 >
+
+
+                    <!-- Email -->
 
                     <div class="form-group">
 
@@ -178,7 +300,7 @@
                             type="email"
                             id="email"
                             name="email"
-                            placeholder="you@example.com"
+                            placeholder="Enter your email address"
                             autocomplete="email"
                             required
                         >
@@ -186,13 +308,17 @@
                     </div>
 
 
+
+                    <!-- Password -->
+
                     <div class="form-group">
 
                         <label for="password">
                             Password
                         </label>
 
-                        <div class="password-wrapper">
+
+                        <div class="password-field">
 
                             <input
                                 type="password"
@@ -203,10 +329,11 @@
                                 required
                             >
 
+
                             <button
                                 type="button"
-                                class="password-toggle"
                                 id="passwordToggle"
+                                class="password-toggle"
                                 aria-label="Show password"
                             >
                                 👁
@@ -217,13 +344,17 @@
                     </div>
 
 
-                    <div class="form-options">
 
-                        <label class="checkbox-label">
+                    <!-- Remember + Forgot -->
+
+                    <div class="login-options">
+
+                        <label class="checkbox-row">
 
                             <input
                                 type="checkbox"
                                 id="rememberMe"
+                                name="rememberMe"
                             >
 
                             <span>
@@ -233,69 +364,87 @@
                         </label>
 
 
-                        <button
-                            type="button"
-                            class="text-button"
+                        <a
+                            href="#"
                             id="forgotPassword"
                         >
                             Forgot password?
-                        </button>
+                        </a>
 
                     </div>
 
 
+
+                    <!-- Firebase message -->
+
+                    <div
+                        id="authMessage"
+                        class="auth-message"
+                        role="alert"
+                        aria-live="polite"
+                    ></div>
+
+
+
+                    <!-- =================================
+                         SIGN IN BUTTON
+                    ================================== -->
+
                     <button
                         type="submit"
-                        class="primary-button auth-submit"
                         id="loginButton"
                     >
                         Sign In
                     </button>
 
+
+
+                    <!-- Student registration -->
+
+                    <div
+                        id="studentRegisterPrompt"
+                        class="auth-switch"
+                    >
+
+                        <span>
+                            New to EduReach?
+                        </span>
+
+                        <a href="register.html">
+                            Create a student account
+                        </a>
+
+                    </div>
+
+
+
+                    <!-- Security -->
+
+                    <div class="security-note">
+
+                        <span>
+                            🔒
+                        </span>
+
+                        <span>
+                            Your password is securely managed by Firebase Authentication.
+                        </span>
+
+                    </div>
+
+
                 </form>
 
+            </section>
 
-                <div
-                    class="register-prompt"
-                    id="studentRegisterPrompt"
-                >
-
-                    <span>
-                        Don't have a student account?
-                    </span>
-
-                    <a href="register.html">
-                        Create account
-                    </a>
-
-                </div>
-
-
-                <button
-                    type="button"
-                    class="change-role-button"
-                    id="changeRole"
-                >
-                    ← Choose a different role
-                </button>
-
-
-                <div class="security-note">
-
-                    🔒 Your account is securely
-                    authenticated through Firebase.
-
-                </div>
-
-            </div>
-
-        </section>
+        </div>
 
     </main>
 
 
+
     <!-- =========================================
-         FIREBASE SDK
+         FIREBASE
     ========================================== -->
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -306,10 +455,9 @@
 
     <script src="firebase.js"></script>
 
+    <script src="login.js?v=4"></script>
 
-    <!-- LOGIN JAVASCRIPT -->
-
-    <script src="login.js?v=3"></script>
 
 </body>
+
 </html>
