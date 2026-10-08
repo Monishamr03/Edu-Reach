@@ -1,39 +1,35 @@
 /* =========================================
    EDUREACH
-   Main Application
+   Main Application JavaScript
 ========================================= */
 
 
 /*
-    -----------------------------------------
-    ROLE CONFIGURATION
-    -----------------------------------------
+    ========================================
+    ROLE ROUTES
+    ========================================
 */
 
 const roleRoutes = {
-
     student: "login.html?role=student",
-
     teacher: "login.html?role=teacher",
-
     admin: "login.html?role=admin"
-
 };
 
 
-
 /*
-    -----------------------------------------
+    ========================================
     SELECT ROLE
-    -----------------------------------------
+    ========================================
 */
 
 function selectRole(role) {
 
+    // Check whether the selected role exists
     if (!roleRoutes[role]) {
 
         console.error(
-            "Invalid EduReach role:",
+            "EduReach: Invalid role selected:",
             role
         );
 
@@ -42,65 +38,60 @@ function selectRole(role) {
 
 
     console.log(
-        "Selected role:",
+        "EduReach: Selected role:",
         role
     );
 
 
-    /*
-        Navigate to the reusable
-        login page with the selected
-        role in the URL.
-    */
-
-    window.location.href =
-        roleRoutes[role];
-
+    // Go to the login page for that role
+    window.location.href = roleRoutes[role];
 }
 
 
-
 /*
-    -----------------------------------------
-    ROLE BUTTONS
-    -----------------------------------------
+    ========================================
+    INITIALIZE ROLE BUTTONS
+    ========================================
 */
 
 function initializeRoleButtons() {
 
     const roleButtons =
-        document.querySelectorAll(
-            ".role-option"
+        document.querySelectorAll(".role-option");
+
+
+    // If there are no role buttons,
+    // simply stop.
+    if (roleButtons.length === 0) {
+
+        return;
+    }
+
+
+    roleButtons.forEach(function(button) {
+
+        button.addEventListener(
+            "click",
+            function() {
+
+                const role =
+                    button.dataset.role;
+
+
+                selectRole(role);
+
+            }
         );
 
-
-    roleButtons.forEach(
-        function(button) {
-
-            button.addEventListener(
-                "click",
-                function() {
-
-                    const role =
-                        button.dataset.role;
-
-
-                    selectRole(role);
-
-                }
-            );
-
-        }
-    );
+    });
 
 }
 
 
-
 /*
-    -----------------------------------------
+    ========================================
     APPLICATION INITIALIZATION
-    -----------------------------------------
+    ========================================
 */
 
 function initializeApp() {
@@ -115,11 +106,10 @@ function initializeApp() {
 }
 
 
-
 /*
-    -----------------------------------------
-    START
-    -----------------------------------------
+    ========================================
+    START APPLICATION
+    ========================================
 */
 
 document.addEventListener(
