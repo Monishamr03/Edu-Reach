@@ -1,540 +1,555 @@
-/* =========================================
-   EDUREACH
-   STUDENT REGISTRATION
-   Step 4C - Firebase Registration
-========================================= */
+<!DOCTYPE html>
+<html lang="en">
 
-document.addEventListener("DOMContentLoaded", function () {
+<head>
+    <meta charset="UTF-8">
 
-    const registerForm =
-        document.getElementById("registerForm");
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    const fullNameInput =
-        document.getElementById("fullName");
+    <meta
+        name="description"
+        content="Create your EduReach student account."
+    >
 
-    const emailInput =
-        document.getElementById("email");
+    <title>Create Student Account | EduReach</title>
 
-    const passwordInput =
-        document.getElementById("password");
+    <link
+        rel="stylesheet"
+        href="style.css?v=10"
+    >
 
-    const confirmPasswordInput =
-        document.getElementById("confirmPassword");
+    <style>
+        /* =========================================
+           REGISTER PAGE SAFETY OVERRIDES
+           ========================================= */
 
-    const educationalUse =
-        document.getElementById("educationalUse");
-
-    const passwordToggle =
-        document.getElementById("passwordToggle");
-
-    const confirmPasswordToggle =
-        document.getElementById("confirmPasswordToggle");
-
-    const registerMessage =
-        document.getElementById("registerMessage");
-
-    const registerButton =
-        document.getElementById("registerButton");
-
-
-    /* =========================================
-       CHECK FIREBASE
-    ========================================== */
-
-    if (
-        typeof firebase === "undefined" ||
-        typeof eduReachAuth === "undefined" ||
-        typeof eduReachDB === "undefined"
-    ) {
-
-        showMessage(
-            "Firebase could not be loaded. Please refresh the page and try again."
-        );
-
-        console.error(
-            "EduReach Firebase initialization error."
-        );
-
-        return;
-    }
-
-
-    /* =========================================
-       SHOW MESSAGE
-    ========================================== */
-
-    function showMessage(message, type = "error") {
-
-        if (!registerMessage) {
-            return;
+        .auth-page {
+            min-height: 100vh;
         }
 
-        registerMessage.textContent = message;
-
-        registerMessage.className =
-            "auth-message " + type;
-    }
-
-
-    /* =========================================
-       CLEAR MESSAGE
-    ========================================== */
-
-    function clearMessage() {
-
-        if (!registerMessage) {
-            return;
+        .auth-main {
+            width: 100%;
+            padding: 48px 0 70px;
         }
 
-        registerMessage.textContent = "";
+        .auth-container {
+            width: min(calc(100% - 40px), 1100px);
+            margin: 0 auto;
 
-        registerMessage.className =
-            "auth-message";
-    }
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(420px, 490px);
 
-
-    /* =========================================
-       LOADING
-    ========================================== */
-
-    function setLoading(isLoading) {
-
-        registerButton.disabled = isLoading;
-
-        if (isLoading) {
-
-            registerButton.textContent =
-                "Creating account...";
-
-        } else {
-
-            registerButton.textContent =
-                "Create Student Account";
-
+            gap: 70px;
+            align-items: center;
         }
-    }
 
-
-    /* =========================================
-       PASSWORD TOGGLE
-    ========================================== */
-
-    if (passwordToggle) {
-
-        passwordToggle.addEventListener(
-            "click",
-            function () {
-
-                const showingPassword =
-                    passwordInput.type === "text";
-
-                passwordInput.type =
-                    showingPassword
-                        ? "password"
-                        : "text";
-
-                passwordToggle.textContent =
-                    showingPassword
-                        ? "👁"
-                        : "🙈";
-
-            }
-        );
-
-    }
-
-
-    /* =========================================
-       CONFIRM PASSWORD TOGGLE
-    ========================================== */
-
-    if (confirmPasswordToggle) {
-
-        confirmPasswordToggle.addEventListener(
-            "click",
-            function () {
-
-                const showingPassword =
-                    confirmPasswordInput.type === "text";
-
-                confirmPasswordInput.type =
-                    showingPassword
-                        ? "password"
-                        : "text";
-
-                confirmPasswordToggle.textContent =
-                    showingPassword
-                        ? "👁"
-                        : "🙈";
-
-            }
-        );
-
-    }
-
-
-    /* =========================================
-       FORM SUBMISSION
-    ========================================== */
-
-    registerForm.addEventListener(
-        "submit",
-        async function (event) {
-
-            event.preventDefault();
-
-            clearMessage();
-
-
-            /* =================================
-               READ VALUES
-            ================================== */
-
-            const fullName =
-                fullNameInput.value.trim();
-
-            const email =
-                emailInput.value.trim();
-
-            const password =
-                passwordInput.value;
-
-            const confirmPassword =
-                confirmPasswordInput.value;
-
-
-            /* =================================
-               VALIDATION
-            ================================== */
-
-            if (fullName.length < 2) {
-
-                showMessage(
-                    "Please enter your full name."
-                );
-
-                fullNameInput.focus();
-
-                return;
-            }
-
-
-            if (!isValidEmail(email)) {
-
-                showMessage(
-                    "Please enter a valid email address."
-                );
-
-                emailInput.focus();
-
-                return;
-            }
-
-
-            if (password.length < 6) {
-
-                showMessage(
-                    "Password must contain at least 6 characters."
-                );
-
-                passwordInput.focus();
-
-                return;
-            }
-
-
-            if (password !== confirmPassword) {
-
-                showMessage(
-                    "Passwords do not match."
-                );
-
-                confirmPasswordInput.focus();
-
-                return;
-            }
-
-
-            if (!educationalUse.checked) {
-
-                showMessage(
-                    "Please confirm that this account is for educational use."
-                );
-
-                educationalUse.focus();
-
-                return;
-            }
-
-
-            /* =================================
-               START
-            ================================== */
-
-            setLoading(true);
-
-
-            let createdUser = null;
-
-
-            try {
-
-                console.log(
-                    "EduReach: Creating Firebase Authentication account..."
-                );
-
-
-                /* =================================
-                   CREATE AUTH ACCOUNT
-                ================================== */
-
-                const userCredential =
-                    await eduReachAuth
-                        .createUserWithEmailAndPassword(
-                            email,
-                            password
-                        );
-
-
-                createdUser =
-                    userCredential.user;
-
-
-                console.log(
-                    "EduReach: Firebase Authentication account created.",
-                    createdUser.uid
-                );
-
-
-                /* =================================
-                   UPDATE DISPLAY NAME
-                ================================== */
-
-                await createdUser.updateProfile({
-
-                    displayName: fullName
-
-                });
-
-
-                console.log(
-                    "EduReach: Display name updated."
-                );
-
-
-                /* =================================
-                   CREATE FIRESTORE PROFILE
-                ================================== */
-
-                await eduReachDB
-                    .collection("users")
-                    .doc(createdUser.uid)
-                    .set({
-
-                        name: fullName,
-
-                        email: email,
-
-                        role: "student",
-
-                        photo: "",
-
-                        xp: 0,
-
-                        level: 1,
-
-                        streak: 0,
-
-                        createdAt:
-                            firebase.firestore
-                                .FieldValue
-                                .serverTimestamp()
-
-                    });
-
-
-                console.log(
-                    "EduReach: Firestore student profile created."
-                );
-
-
-                /* =================================
-                   SUCCESS
-                ================================== */
-
-                showMessage(
-                    "Your student account has been created successfully!",
-                    "success"
-                );
-
-
-                setLoading(true);
-
-
-                /* =================================
-                   SIGN OUT
-                ================================== */
-
-                await eduReachAuth.signOut();
-
-
-                /* =================================
-                   GO TO LOGIN
-                ================================== */
-
-                setTimeout(
-                    function () {
-
-                        window.location.href =
-                            "login.html?role=student";
-
-                    },
-                    1200
-                );
-
-            }
-
-
-            /* =====================================
-               FIREBASE ERROR
-            ====================================== */
-
-            catch (error) {
-
-                console.error(
-                    "EduReach registration error:",
-                    error
-                );
-
-
-                console.error(
-                    "Firebase error code:",
-                    error.code
-                );
-
-
-                console.error(
-                    "Firebase error message:",
-                    error.message
-                );
-
-
-                let message =
-                    "Unable to create your account.";
-
-
-                switch (error.code) {
-
-
-                    /* =============================
-                       AUTHENTICATION ERRORS
-                    ============================== */
-
-                    case "auth/email-already-in-use":
-
-                        message =
-                            "This email address already has an EduReach account. Please sign in instead.";
-
-                        break;
-
-
-                    case "auth/invalid-email":
-
-                        message =
-                            "Please enter a valid email address.";
-
-                        break;
-
-
-                    case "auth/weak-password":
-
-                        message =
-                            "Your password is too weak. Please use at least 6 characters.";
-
-                        break;
-
-
-                    case "auth/operation-not-allowed":
-
-                        message =
-                            "Email/password sign-in is not enabled in Firebase Authentication.";
-
-                        break;
-
-
-                    case "auth/network-request-failed":
-
-                        message =
-                            "Network connection failed. Please check your internet connection.";
-
-                        break;
-
-
-                    /* =============================
-                       FIRESTORE ERRORS
-                    ============================== */
-
-                    case "permission-denied":
-
-                        message =
-                            "Your account was created, but EduReach could not save your student profile. Please check the Firestore security rules.";
-
-                        break;
-
-
-                    case "failed-precondition":
-
-                        message =
-                            "Firebase Firestore is not ready yet. Please check that Firestore Database is enabled.";
-
-                        break;
-
-
-                    case "unavailable":
-
-                        message =
-                            "Firebase is temporarily unavailable. Please try again.";
-
-                        break;
-
-
-                    /* =============================
-                       DEFAULT
-                    ============================== */
-
-                    default:
-
-                        if (error.message) {
-
-                            message =
-                                "Firebase error: " +
-                                error.message;
-
-                        }
-
-                        break;
-
-                }
-
-
-                showMessage(message);
-
-                setLoading(false);
-
-            }
-
+        .auth-intro {
+            min-width: 0;
         }
-    );
+
+        .auth-card {
+            width: 100%;
+            max-width: 490px;
+            margin: 0 auto;
+
+            box-sizing: border-box;
+        }
+
+        .auth-form {
+            width: 100%;
+        }
+
+        .form-group {
+            width: 100%;
+        }
+
+        .form-group input {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .password-field {
+            width: 100%;
+        }
+
+        .password-field input {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .primary-auth-button {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .auth-message {
+            width: 100%;
+            box-sizing: border-box;
+
+            margin-top: 16px;
+            padding: 12px 14px;
+
+            border-radius: 12px;
+
+            font-size: 14px;
+            line-height: 1.5;
+
+            display: none;
+        }
+
+        .auth-message:not(:empty) {
+            display: block;
+        }
+
+        .auth-message.error {
+            background: #fff0f0;
+            color: #c43d3d;
+            border: 1px solid #ffd0d0;
+        }
+
+        .auth-message.success {
+            background: #edf9f4;
+            color: #23855f;
+            border: 1px solid #c8eedc;
+        }
+
+        .auth-message.info {
+            background: #f0efff;
+            color: #5144d9;
+            border: 1px solid #ddd9ff;
+        }
+
+        @media (max-width: 950px) {
+
+            .auth-container {
+                grid-template-columns: 1fr;
+                max-width: 650px;
+                gap: 40px;
+            }
+
+            .auth-card {
+                max-width: 650px;
+            }
+        }
+
+        @media (max-width: 640px) {
+
+            .auth-main {
+                padding: 28px 0 50px;
+            }
+
+            .auth-container {
+                width: min(calc(100% - 28px), 500px);
+            }
+
+            .auth-card {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
 
 
-    /* =========================================
-       EMAIL VALIDATION
-    ========================================== */
+<body class="auth-page">
 
-    function isValidEmail(email) {
+    <!-- =========================================
+         HEADER
+         ========================================= -->
 
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    <header class="site-header">
 
-    }
+        <div class="header-inner">
 
-});
+            <a
+                href="index.html"
+                class="brand"
+            >
+                <span class="brand-mark">E</span>
+
+                <span class="brand-text">
+                    EduReach
+                </span>
+            </a>
+
+            <a
+                href="index.html"
+                class="back-home"
+            >
+                ← Back to Home
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================
+         MAIN
+         ========================================= -->
+
+    <main class="auth-main">
+
+        <div class="auth-container">
+
+
+            <!-- =================================
+                 LEFT INTRODUCTION
+                 ================================= -->
+
+            <section class="auth-intro">
+
+                <div class="auth-badge">
+                    🎓 Student Registration
+                </div>
+
+                <h1>
+                    Start your learning
+                    <span>journey today.</span>
+                </h1>
+
+                <p>
+                    Create your EduReach student account
+                    and start learning STEM subjects through
+                    accessible, lightweight educational content.
+                </p>
+
+
+                <div class="auth-highlights">
+
+                    <div class="auth-highlight">
+
+                        <div class="highlight-icon">
+                            📚
+                        </div>
+
+                        <div>
+                            <strong>
+                                Learn anywhere
+                            </strong>
+
+                            <span>
+                                Access lightweight learning
+                                resources designed for limited
+                                connectivity.
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="auth-highlight">
+
+                        <div class="highlight-icon">
+                            🏆
+                        </div>
+
+                        <div>
+                            <strong>
+                                Earn XP and achievements
+                            </strong>
+
+                            <span>
+                                Build your learning streak
+                                as you progress.
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <div class="auth-highlight">
+
+                        <div class="highlight-icon">
+                            🌱
+                        </div>
+
+                        <div>
+                            <strong>
+                                Learn and grow
+                            </strong>
+
+                            <span>
+                                Designed to support accessible
+                                STEM education.
+                            </span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 REGISTRATION CARD
+                 ================================= -->
+
+            <section class="auth-card">
+
+                <div class="auth-card-header">
+
+                    <div class="selected-role">
+                        <span>🎓</span>
+
+                        <div>
+                            <small>
+                                ACCOUNT TYPE
+                            </small>
+
+                            <strong>
+                                Student
+                            </strong>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- =================================
+                     FORM
+                     ================================= -->
+
+                <form
+                    id="registerForm"
+                    class="auth-form"
+                    novalidate
+                >
+
+
+                    <!-- FULL NAME -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="fullName"
+                            class="form-label-row"
+                        >
+                            <span>
+                                Full Name
+                            </span>
+                        </label>
+
+                        <input
+                            type="text"
+                            id="fullName"
+                            name="fullName"
+                            placeholder="Enter your full name"
+                            autocomplete="name"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="email"
+                            class="form-label-row"
+                        >
+                            <span>
+                                Email Address
+                            </span>
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email address"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+
+                    <!-- PASSWORD -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="password"
+                            class="form-label-row"
+                        >
+                            <span>
+                                Password
+                            </span>
+                        </label>
+
+                        <div class="password-field">
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Create a password"
+                                autocomplete="new-password"
+                                minlength="6"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                id="passwordToggle"
+                                aria-label="Show password"
+                            >
+                                👁
+                            </button>
+
+                        </div>
+
+                        <small>
+                            Use at least 6 characters.
+                        </small>
+
+                    </div>
+
+
+                    <!-- CONFIRM PASSWORD -->
+
+                    <div class="form-group">
+
+                        <label
+                            for="confirmPassword"
+                            class="form-label-row"
+                        >
+                            <span>
+                                Confirm Password
+                            </span>
+                        </label>
+
+                        <div class="password-field">
+
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                name="confirmPassword"
+                                placeholder="Enter your password again"
+                                autocomplete="new-password"
+                                minlength="6"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                id="confirmPasswordToggle"
+                                aria-label="Show password"
+                            >
+                                👁
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- EDUCATIONAL USE -->
+
+                    <div class="checkbox-row">
+
+                        <input
+                            type="checkbox"
+                            id="educationalUse"
+                            name="educationalUse"
+                            required
+                        >
+
+                        <label for="educationalUse">
+                            I confirm that I am creating this
+                            account for educational use.
+                        </label>
+
+                    </div>
+
+
+                    <!-- MESSAGE -->
+
+                    <div
+                        id="registerMessage"
+                        class="auth-message"
+                        role="alert"
+                        aria-live="polite"
+                    ></div>
+
+
+                    <!-- SUBMIT -->
+
+                    <button
+                        type="submit"
+                        id="registerButton"
+                        class="primary-auth-button"
+                    >
+                        Create Student Account
+                    </button>
+
+
+                </form>
+
+
+                <!-- =================================
+                     LOGIN LINK
+                     ================================= -->
+
+                <div class="register-prompt">
+
+                    <span>
+                        Already have an account?
+                    </span>
+
+                    <a href="login.html?role=student">
+                        Sign in
+                    </a>
+
+                </div>
+
+
+                <!-- =================================
+                     SECURITY NOTE
+                     ================================= -->
+
+                <div class="auth-security">
+
+                    <span>
+                        🔒
+                    </span>
+
+                    <p>
+                        Your account is securely managed
+                        using Firebase Authentication.
+                    </p>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================================
+         FIREBASE
+         ========================================= -->
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+    <script src="firebase.js"></script>
+
+    <script src="register.js?v=10"></script>
+
+</body>
+
+</html>
