@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -11,29 +12,53 @@
 
     <meta
         name="description"
-        content="EduReach - Accessible STEM learning for everyone."
+        content="EduReach - Accessible STEM education for students, teachers and administrators."
+    >
+
+    <meta
+        name="theme-color"
+        content="#6D5DFC"
     >
 
     <title>EduReach | Learn Without Limits</title>
 
-    <link rel="stylesheet" href="style.css">
+
+    <!-- ================================
+         STYLESHEET
+    ================================= -->
+
+    <link
+        rel="stylesheet"
+        href="style.css?v=2"
+    >
+
 </head>
+
 
 <body>
 
-    <!-- =========================
+
+    <!-- ================================
          HEADER
-    ========================== -->
+    ================================= -->
 
     <header class="site-header">
 
         <div class="container header-inner">
 
-            <a href="#" class="brand">
+
+            <!-- BRAND -->
+
+            <a
+                href="index.html"
+                class="brand"
+                aria-label="EduReach Home"
+            >
 
                 <div class="brand-icon">
                     E
                 </div>
+
 
                 <div class="brand-text">
 
@@ -50,9 +75,14 @@
             </a>
 
 
+            <!-- STATUS -->
+
             <div class="header-status">
 
-                <span class="status-dot"></span>
+                <span
+                    class="status-dot"
+                    aria-hidden="true"
+                ></span>
 
                 <span>
                     Learning made accessible
@@ -65,30 +95,40 @@
     </header>
 
 
-    <!-- =========================
-         MAIN CONTENT
-    ========================== -->
+
+    <!-- ================================
+         MAIN
+    ================================= -->
 
     <main>
 
-        <!-- HERO SECTION -->
+
+        <!-- ================================
+             HERO SECTION
+        ================================= -->
 
         <section class="hero-section">
 
             <div class="container hero-container">
 
 
-                <!-- HERO TEXT -->
+                <!-- =========================
+                     HERO CONTENT
+                ========================== -->
 
                 <div class="hero-content">
 
+
                     <div class="eyebrow">
 
-                        <span>✦</span>
+                        <span>
+                            ✦
+                        </span>
 
                         STEM education for everyone
 
                     </div>
+
 
 
                     <h1>
@@ -102,21 +142,29 @@
                     </h1>
 
 
+
                     <p class="hero-description">
 
-                        EduReach brings quality STEM education closer
-                        to students and educators with lightweight,
-                        accessible and engaging learning experiences.
+                        EduReach brings quality STEM education
+                        closer to students and educators with
+                        lightweight, accessible and engaging
+                        learning experiences.
 
                     </p>
 
+
+
+                    <!-- FEATURES -->
 
                     <div class="hero-features">
 
 
                         <div class="feature-item">
 
-                            <span class="feature-icon">
+                            <span
+                                class="feature-icon"
+                                aria-hidden="true"
+                            >
                                 📚
                             </span>
 
@@ -127,9 +175,13 @@
                         </div>
 
 
+
                         <div class="feature-item">
 
-                            <span class="feature-icon">
+                            <span
+                                class="feature-icon"
+                                aria-hidden="true"
+                            >
                                 📱
                             </span>
 
@@ -140,9 +192,13 @@
                         </div>
 
 
+
                         <div class="feature-item">
 
-                            <span class="feature-icon">
+                            <span
+                                class="feature-icon"
+                                aria-hidden="true"
+                            >
                                 🏆
                             </span>
 
@@ -157,15 +213,23 @@
                 </div>
 
 
-                <!-- ROLE SELECTION CARD -->
+
+                <!-- =========================
+                     ROLE CARD
+                ========================== -->
 
                 <div class="role-card">
 
 
+                    <!-- CARD HEADER -->
+
                     <div class="role-card-header">
 
 
-                        <div class="welcome-icon">
+                        <div
+                            class="welcome-icon"
+                            aria-hidden="true"
+                        >
                             👋
                         </div>
 
@@ -191,18 +255,27 @@
                     </div>
 
 
+
+                    <!-- =====================
+                         ROLE OPTIONS
+                    ====================== -->
+
                     <div class="role-options">
 
 
                         <!-- STUDENT -->
 
                         <button
-                            class="role-option"
                             type="button"
+                            class="role-option"
                             data-role="student"
+                            aria-label="Continue as Student"
                         >
 
-                            <div class="role-icon student-icon">
+                            <div
+                                class="role-icon student-icon"
+                                aria-hidden="true"
+                            >
                                 🎓
                             </div>
 
@@ -220,22 +293,30 @@
                             </div>
 
 
-                            <span class="role-arrow">
+                            <span
+                                class="role-arrow"
+                                aria-hidden="true"
+                            >
                                 →
                             </span>
 
                         </button>
 
 
+
                         <!-- TEACHER -->
 
                         <button
-                            class="role-option"
                             type="button"
+                            class="role-option"
                             data-role="teacher"
+                            aria-label="Continue as Teacher"
                         >
 
-                            <div class="role-icon teacher-icon">
+                            <div
+                                class="role-icon teacher-icon"
+                                aria-hidden="true"
+                            >
                                 👨‍🏫
                             </div>
 
@@ -253,22 +334,30 @@
                             </div>
 
 
-                            <span class="role-arrow">
+                            <span
+                                class="role-arrow"
+                                aria-hidden="true"
+                            >
                                 →
                             </span>
 
                         </button>
 
 
+
                         <!-- ADMIN -->
 
                         <button
-                            class="role-option"
                             type="button"
+                            class="role-option"
                             data-role="admin"
+                            aria-label="Continue as Administrator"
                         >
 
-                            <div class="role-icon admin-icon">
+                            <div
+                                class="role-icon admin-icon"
+                                aria-hidden="true"
+                            >
                                 ⚙️
                             </div>
 
@@ -286,7 +375,10 @@
                             </div>
 
 
-                            <span class="role-arrow">
+                            <span
+                                class="role-arrow"
+                                aria-hidden="true"
+                            >
                                 →
                             </span>
 
@@ -295,9 +387,15 @@
                     </div>
 
 
+
+                    <!-- SECURITY -->
+
                     <div class="role-card-footer">
 
-                        <span class="security-icon">
+                        <span
+                            class="security-icon"
+                            aria-hidden="true"
+                        >
                             🔒
                         </span>
 
@@ -314,9 +412,10 @@
         </section>
 
 
-        <!-- =========================
-             BENEFITS SECTION
-        ========================== -->
+
+        <!-- ================================
+             BENEFITS
+        ================================= -->
 
         <section class="benefits-section">
 
@@ -337,6 +436,7 @@
                 </div>
 
 
+
                 <div class="benefit-grid">
 
 
@@ -344,7 +444,10 @@
 
                     <article class="benefit-card">
 
-                        <div class="benefit-icon">
+                        <div
+                            class="benefit-icon"
+                            aria-hidden="true"
+                        >
                             📶
                         </div>
 
@@ -365,11 +468,15 @@
                     </article>
 
 
+
                     <!-- BENEFIT 2 -->
 
                     <article class="benefit-card">
 
-                        <div class="benefit-icon">
+                        <div
+                            class="benefit-icon"
+                            aria-hidden="true"
+                        >
                             🎧
                         </div>
 
@@ -389,11 +496,15 @@
                     </article>
 
 
+
                     <!-- BENEFIT 3 -->
 
                     <article class="benefit-card">
 
-                        <div class="benefit-icon">
+                        <div
+                            class="benefit-icon"
+                            aria-hidden="true"
+                        >
                             📈
                         </div>
 
@@ -421,13 +532,15 @@
     </main>
 
 
-    <!-- =========================
+
+    <!-- ================================
          FOOTER
-    ========================== -->
+    ================================= -->
 
     <footer class="site-footer">
 
         <div class="container footer-inner">
+
 
             <div>
 
@@ -451,11 +564,15 @@
     </footer>
 
 
-    <!-- =========================
-         JAVASCRIPT
-    ========================== -->
 
-    <script src="app.js"></script>
+    <!-- ================================
+         JAVASCRIPT
+         
+         v=2 forces the browser to
+         load the newest app.js.
+    ================================= -->
+
+    <script src="app.js?v=2"></script>
 
 </body>
 
