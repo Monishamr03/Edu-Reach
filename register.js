@@ -1,10 +1,14 @@
 /* =========================================
    EDUREACH
-   Student Registration
-   Step 4A - Firebase Authentication
+   STUDENT REGISTRATION
+   Firebase Authentication + Firestore
 ========================================= */
 
 document.addEventListener("DOMContentLoaded", function () {
+
+    /* =========================================
+       GET HTML ELEMENTS
+    ========================================= */
 
     const registerForm =
         document.getElementById("registerForm");
@@ -38,10 +42,51 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =========================================
-       MESSAGE
-    ========================================== */
+       CHECK HTML
+    ========================================= */
+
+    if (!registerForm) {
+
+        console.error(
+            "EduReach: registerForm was not found."
+        );
+
+        return;
+    }
+
+
+    /* =========================================
+       CHECK FIREBASE
+    ========================================= */
+
+    if (
+        typeof firebase === "undefined" ||
+        typeof eduReachAuth === "undefined" ||
+        typeof eduReachDB === "undefined"
+    ) {
+
+        showMessage(
+            "Firebase could not be loaded. Please refresh the page and try again.",
+            "error"
+        );
+
+        console.error(
+            "EduReach: Firebase initialization failed."
+        );
+
+        return;
+    }
+
+
+    /* =========================================
+       SHOW MESSAGE
+    ========================================= */
 
     function showMessage(message, type = "error") {
+
+        if (!registerMessage) {
+            return;
+        }
 
         registerMessage.textContent = message;
 
@@ -50,7 +95,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
+    /* =========================================
+       CLEAR MESSAGE
+    ========================================= */
+
     function clearMessage() {
+
+        if (!registerMessage) {
+            return;
+        }
 
         registerMessage.textContent = "";
 
@@ -60,10 +113,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =========================================
-       LOADING STATE
-    ========================================== */
+       BUTTON LOADING STATE
+    ========================================= */
 
     function setLoading(isLoading) {
+
+        if (!registerButton) {
+            return;
+        }
 
         registerButton.disabled = isLoading;
 
@@ -82,70 +139,95 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =========================================
-       PASSWORD SHOW / HIDE
-    ========================================== */
+       PASSWORD TOGGLE
+    ========================================= */
 
-    passwordToggle.addEventListener(
-        "click",
-        function () {
+    if (passwordToggle && passwordInput) {
 
-            const isHidden =
-                passwordInput.type === "password";
+        passwordToggle.addEventListener(
+            "click",
+            function () {
 
-            passwordInput.type =
-                isHidden
-                    ? "text"
-                    : "password";
+                const showingPassword =
+                    passwordInput.type === "text";
 
-            passwordToggle.textContent =
-                isHidden
-                    ? "🙈"
-                    : "👁";
+                if (showingPassword) {
 
-            passwordToggle.setAttribute(
-                "aria-label",
-                isHidden
-                    ? "Hide password"
-                    : "Show password"
-            );
-        }
-    );
+                    passwordInput.type = "password";
+
+                    passwordToggle.textContent = "👁";
+
+                    passwordToggle.setAttribute(
+                        "aria-label",
+                        "Show password"
+                    );
+
+                } else {
+
+                    passwordInput.type = "text";
+
+                    passwordToggle.textContent = "🙈";
+
+                    passwordToggle.setAttribute(
+                        "aria-label",
+                        "Hide password"
+                    );
+                }
+            }
+        );
+    }
 
 
     /* =========================================
-       CONFIRM PASSWORD SHOW / HIDE
-    ========================================== */
+       CONFIRM PASSWORD TOGGLE
+    ========================================= */
 
-    confirmPasswordToggle.addEventListener(
-        "click",
-        function () {
+    if (
+        confirmPasswordToggle &&
+        confirmPasswordInput
+    ) {
 
-            const isHidden =
-                confirmPasswordInput.type === "password";
+        confirmPasswordToggle.addEventListener(
+            "click",
+            function () {
 
-            confirmPasswordInput.type =
-                isHidden
-                    ? "text"
-                    : "password";
+                const showingPassword =
+                    confirmPasswordInput.type === "text";
 
-            confirmPasswordToggle.textContent =
-                isHidden
-                    ? "🙈"
-                    : "👁";
+                if (showingPassword) {
 
-            confirmPasswordToggle.setAttribute(
-                "aria-label",
-                isHidden
-                    ? "Hide password"
-                    : "Show password"
-            );
-        }
-    );
+                    confirmPasswordInput.type =
+                        "password";
+
+                    confirmPasswordToggle.textContent =
+                        "👁";
+
+                    confirmPasswordToggle.setAttribute(
+                        "aria-label",
+                        "Show password"
+                    );
+
+                } else {
+
+                    confirmPasswordInput.type =
+                        "text";
+
+                    confirmPasswordToggle.textContent =
+                        "🙈";
+
+                    confirmPasswordToggle.setAttribute(
+                        "aria-label",
+                        "Hide password"
+                    );
+                }
+            }
+        );
+    }
 
 
     /* =========================================
        FORM SUBMISSION
-    ========================================== */
+    ========================================= */
 
     registerForm.addEventListener(
         "submit",
@@ -156,15 +238,15 @@ document.addEventListener("DOMContentLoaded", function () {
             clearMessage();
 
 
-            /* =====================================
-               GET FORM VALUES
-            ====================================== */
+            /* =================================
+               READ VALUES
+            ================================= */
 
             const fullName =
                 fullNameInput.value.trim();
 
             const email =
-                emailInput.value.trim();
+                emailInput.value.trim().toLowerCase();
 
             const password =
                 passwordInput.value;
@@ -173,14 +255,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 confirmPasswordInput.value;
 
 
-            /* =====================================
-               VALIDATION
-            ====================================== */
+            /* =================================
+               VALIDATE FULL NAME
+            ================================= */
 
             if (fullName.length < 2) {
 
                 showMessage(
-                    "Please enter your full name."
+                    "Please enter your full name.",
+                    "error"
                 );
 
                 fullNameInput.focus();
@@ -189,10 +272,15 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
+            /* =================================
+               VALIDATE EMAIL
+            ================================= */
+
             if (!isValidEmail(email)) {
 
                 showMessage(
-                    "Please enter a valid email address."
+                    "Please enter a valid email address.",
+                    "error"
                 );
 
                 emailInput.focus();
@@ -201,10 +289,15 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
+            /* =================================
+               VALIDATE PASSWORD
+            ================================= */
+
             if (password.length < 6) {
 
                 showMessage(
-                    "Password must contain at least 6 characters."
+                    "Password must contain at least 6 characters.",
+                    "error"
                 );
 
                 passwordInput.focus();
@@ -213,10 +306,15 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
+            /* =================================
+               VALIDATE PASSWORD MATCH
+            ================================= */
+
             if (password !== confirmPassword) {
 
                 showMessage(
-                    "Passwords do not match."
+                    "Passwords do not match.",
+                    "error"
                 );
 
                 confirmPasswordInput.focus();
@@ -225,30 +323,45 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            if (!educationalUse.checked) {
+            /* =================================
+               VALIDATE EDUCATIONAL USE
+            ================================= */
+
+            if (
+                !educationalUse ||
+                !educationalUse.checked
+            ) {
 
                 showMessage(
-                    "Please confirm that this account is for educational use."
+                    "Please confirm that this account is for educational use.",
+                    "error"
                 );
 
-                educationalUse.focus();
+                if (educationalUse) {
+                    educationalUse.focus();
+                }
 
                 return;
             }
 
 
-            /* =====================================
+            /* =================================
                START LOADING
-            ====================================== */
+            ================================= */
 
             setLoading(true);
 
 
             try {
 
+                console.log(
+                    "EduReach: Creating student Firebase account..."
+                );
+
+
                 /* =================================
                    CREATE FIREBASE AUTH ACCOUNT
-                ================================== */
+                ================================= */
 
                 const userCredential =
                     await eduReachAuth
@@ -262,9 +375,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     userCredential.user;
 
 
+                console.log(
+                    "EduReach: Firebase Auth account created:",
+                    user.uid
+                );
+
+
                 /* =================================
-                   SAVE DISPLAY NAME
-                ================================== */
+                   UPDATE FIREBASE DISPLAY NAME
+                ================================= */
 
                 await user.updateProfile({
 
@@ -273,9 +392,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
 
 
+                console.log(
+                    "EduReach: Display name updated."
+                );
+
+
                 /* =================================
                    CREATE FIRESTORE USER PROFILE
-                ================================== */
+                ================================= */
 
                 await eduReachDB
                     .collection("users")
@@ -304,28 +428,39 @@ document.addEventListener("DOMContentLoaded", function () {
                     });
 
 
-                /* =================================
-                   SUCCESS
-                ================================== */
-
-                showMessage(
-                    "Your student account has been created successfully!",
-                    "success"
+                console.log(
+                    "EduReach: Student Firestore profile created."
                 );
 
 
                 /* =================================
+                   SUCCESS MESSAGE
+                ================================= */
+
+                showMessage(
+                    "Your student account has been created successfully! Redirecting to login...",
+                    "success"
+                );
+
+
+                registerButton.disabled = true;
+
+                registerButton.textContent =
+                    "Account Created ✓";
+
+
+                /* =================================
                    SIGN OUT
-                   The user will log in normally
-                   from the login page.
-                ================================== */
+                   Firebase automatically signs the
+                   newly created user in.
+                ================================= */
 
                 await eduReachAuth.signOut();
 
 
                 /* =================================
                    REDIRECT TO STUDENT LOGIN
-                ================================== */
+                ================================= */
 
                 setTimeout(
                     function () {
@@ -334,21 +469,33 @@ document.addEventListener("DOMContentLoaded", function () {
                             "login.html?role=student";
 
                     },
-                    1200
+                    1500
                 );
 
+            }
 
-            } catch (error) {
+
+            /* =================================
+               ERROR HANDLING
+            ================================= */
+
+            catch (error) {
 
                 console.error(
                     "EduReach registration error:",
                     error
                 );
 
+                console.error(
+                    "Firebase error code:",
+                    error.code
+                );
 
-                /* =================================
-                   FIREBASE ERROR MESSAGES
-                ================================== */
+                console.error(
+                    "Firebase error message:",
+                    error.message
+                );
+
 
                 let message =
                     "Unable to create your account. Please try again.";
@@ -356,13 +503,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 switch (error.code) {
 
+
+                    /* =========================
+                       EMAIL ALREADY EXISTS
+                    ========================= */
+
                     case "auth/email-already-in-use":
 
                         message =
-                            "An account already exists with this email address.";
+                            "This email address already has an EduReach account. Please sign in instead.";
 
                         break;
 
+
+                    /* =========================
+                       INVALID EMAIL
+                    ========================= */
 
                     case "auth/invalid-email":
 
@@ -372,6 +528,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         break;
 
 
+                    /* =========================
+                       WEAK PASSWORD
+                    ========================= */
+
                     case "auth/weak-password":
 
                         message =
@@ -379,6 +539,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                         break;
 
+
+                    /* =========================
+                       AUTH NOT ENABLED
+                    ========================= */
 
                     case "auth/operation-not-allowed":
 
@@ -388,17 +552,89 @@ document.addEventListener("DOMContentLoaded", function () {
                         break;
 
 
+                    /* =========================
+                       NETWORK ERROR
+                    ========================= */
+
                     case "auth/network-request-failed":
 
                         message =
-                            "Network connection failed. Please check your internet connection.";
+                            "Network connection failed. Please check your internet connection and try again.";
 
                         break;
 
+
+                    /* =========================
+                       TOO MANY REQUESTS
+                    ========================= */
+
+                    case "auth/too-many-requests":
+
+                        message =
+                            "Too many attempts were made. Please wait a little while and try again.";
+
+                        break;
+
+
+                    /* =========================
+                       FIRESTORE PERMISSION
+                    ========================= */
+
+                    case "permission-denied":
+
+                        message =
+                            "Your authentication account was created, but EduReach could not save your student profile. Please check the Firestore security rules.";
+
+                        break;
+
+
+                    /* =========================
+                       FIRESTORE PRECONDITION
+                    ========================= */
+
+                    case "failed-precondition":
+
+                        message =
+                            "Firebase Firestore is not ready yet. Please make sure Firestore Database is enabled.";
+
+                        break;
+
+
+                    /* =========================
+                       FIRESTORE UNAVAILABLE
+                    ========================= */
+
+                    case "unavailable":
+
+                        message =
+                            "Firebase is temporarily unavailable. Please try again.";
+
+                        break;
+
+
+                    /* =========================
+                       DEFAULT
+                    ========================= */
+
+                    default:
+
+                        if (error.message) {
+
+                            message =
+                                "Firebase error: " +
+                                error.message;
+
+                        }
+
+                        break;
                 }
 
 
-                showMessage(message);
+                showMessage(
+                    message,
+                    "error"
+                );
+
 
                 setLoading(false);
             }
@@ -409,7 +645,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     /* =========================================
        EMAIL VALIDATION
-    ========================================== */
+    ========================================= */
 
     function isValidEmail(email) {
 
@@ -417,5 +653,14 @@ document.addEventListener("DOMContentLoaded", function () {
             .test(email);
 
     }
+
+
+    /* =========================================
+       INITIALIZATION COMPLETE
+    ========================================= */
+
+    console.log(
+        "EduReach: Student registration page initialized."
+    );
 
 });
