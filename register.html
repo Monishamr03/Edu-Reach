@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
 
     <meta
@@ -18,15 +19,136 @@
 
     <link
         rel="stylesheet"
-        href="style.css?v=4"
+        href="style.css?v=5"
     >
+
+    <!-- Registration-page fixes -->
+    <style>
+
+        /* =========================================
+           REGISTER BUTTON
+        ========================================== */
+
+        #registerButton {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+
+            width: 100% !important;
+            min-height: 52px !important;
+
+            margin-top: 20px !important;
+            padding: 15px 20px !important;
+
+            border: 0 !important;
+            border-radius: 12px !important;
+
+            background: #6D5DFC !important;
+            color: #ffffff !important;
+
+            font-family: inherit !important;
+            font-size: 16px !important;
+            font-weight: 700 !important;
+
+            line-height: 1.2 !important;
+            text-align: center !important;
+
+            cursor: pointer !important;
+
+            box-sizing: border-box !important;
+
+            appearance: none !important;
+            -webkit-appearance: none !important;
+
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+
+        #registerButton:hover {
+            background: #5144D9 !important;
+        }
+
+
+        #registerButton:active {
+            transform: translateY(1px);
+        }
+
+
+        #registerButton:disabled {
+            opacity: 0.65 !important;
+            cursor: not-allowed !important;
+        }
+
+
+        /* =========================================
+           MESSAGE
+        ========================================== */
+
+        #registerMessage {
+            display: block;
+            width: 100%;
+            margin-top: 14px;
+            margin-bottom: 4px;
+        }
+
+
+        /* =========================================
+           PASSWORD TOGGLE
+        ========================================== */
+
+        .password-toggle {
+            cursor: pointer !important;
+        }
+
+
+        /* =========================================
+           CHECKBOX
+        ========================================== */
+
+        #educationalUse {
+            cursor: pointer !important;
+        }
+
+    </style>
+
 </head>
 
 
 <body>
 
+
     <!-- =========================================
-         REGISTRATION PAGE
+         HEADER
+    ========================================== -->
+
+    <header class="auth-header">
+
+        <div class="auth-header-inner">
+
+            <a
+                href="index.html"
+                class="auth-logo"
+            >
+                EduReach
+            </a>
+
+
+            <a
+                href="login.html?role=student"
+                class="back-link"
+            >
+                ← Back to Login
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================================
+         MAIN REGISTRATION PAGE
     ========================================== -->
 
     <main class="auth-page">
@@ -35,14 +157,10 @@
 
 
             <!-- =================================
-                 LEFT INFORMATION SECTION
+                 LEFT SIDE
             ================================== -->
 
             <section class="auth-intro">
-
-                <div class="brand-mark">
-                    EduReach
-                </div>
 
 
                 <div class="auth-badge">
@@ -59,6 +177,7 @@
                     Create your free EduReach student account
                     and start learning STEM subjects at your own pace.
                 </p>
+
 
 
                 <!-- Feature 1 -->
@@ -84,6 +203,7 @@
                 </div>
 
 
+
                 <!-- Feature 2 -->
 
                 <div class="auth-feature">
@@ -105,6 +225,7 @@
                     </div>
 
                 </div>
+
 
 
                 <!-- Feature 3 -->
@@ -129,12 +250,13 @@
 
                 </div>
 
+
             </section>
 
 
 
             <!-- =================================
-                 REGISTRATION CARD
+                 RIGHT REGISTRATION CARD
             ================================== -->
 
             <section class="auth-card">
@@ -165,7 +287,7 @@
 
 
                 <!-- =================================
-                     REGISTRATION FORM
+                     FORM
                 ================================== -->
 
                 <form
@@ -295,7 +417,7 @@
 
 
 
-                    <!-- Educational use -->
+                    <!-- Educational checkbox -->
 
                     <label
                         class="checkbox-row"
@@ -329,40 +451,19 @@
 
 
                     <!-- =================================
-                         CREATE ACCOUNT BUTTON
+                         REGISTER BUTTON
                     ================================== -->
 
                     <button
                         type="submit"
                         id="registerButton"
-                        class="auth-submit"
-                        style="
-                            display: block;
-                            width: 100%;
-                            min-height: 52px;
-                            padding: 15px 20px;
-                            margin-top: 18px;
-                            border: none;
-                            border-radius: 12px;
-                            background: #6D5DFC;
-                            color: #ffffff;
-                            font-family: inherit;
-                            font-size: 16px;
-                            font-weight: 700;
-                            line-height: 1.2;
-                            text-align: center;
-                            cursor: pointer;
-                            box-sizing: border-box;
-                            appearance: none;
-                            -webkit-appearance: none;
-                        "
                     >
                         Create Student Account
                     </button>
 
 
 
-                    <!-- Login link -->
+                    <!-- Login -->
 
                     <div class="auth-switch">
 
@@ -378,17 +479,20 @@
 
 
 
-                    <!-- Security note -->
+                    <!-- Security -->
 
                     <div class="security-note">
 
-                        🔒
+                        <span>
+                            🔒
+                        </span>
 
                         <span>
                             Your password is securely managed by Firebase Authentication.
                         </span>
 
                     </div>
+
 
                 </form>
 
@@ -412,7 +516,8 @@
 
     <script src="firebase.js"></script>
 
-    <script src="register.js?v=3"></script>
+    <script src="register.js?v=4"></script>
+
 
 </body>
 
