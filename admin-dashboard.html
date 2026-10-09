@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | EduReach</title>
+    <link rel="stylesheet" href="style.css?v=9">
+
+    <style>
+        body {
+            margin: 0;
+            background: #f5f6fc;
+            color: #172554;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            padding: 18px 5%;
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        header h2 {
+            margin: 0;
+        }
+
+        button {
+            cursor: pointer;
+            border: 0;
+            border-radius: 8px;
+            padding: 11px 16px;
+            font-weight: bold;
+        }
+
+        .primary {
+            background: #6558f5;
+            color: white;
+        }
+
+        .danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .secondary {
+            background: #e5e7eb;
+            color: #172554;
+        }
+
+        main {
+            max-width: 1150px;
+            margin: 35px auto;
+            padding: 0 20px 40px;
+        }
+
+        .notice {
+            padding: 15px;
+            margin: 20px 0;
+            background: #eef2ff;
+            border-radius: 10px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 18px;
+            margin: 25px 0;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 22px;
+            overflow-wrap: anywhere;
+        }
+
+        .card h3 {
+            margin-top: 0;
+        }
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: bold;
+            margin: 10px 0 0;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        th, td {
+            padding: 13px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .pending {
+            color: #b45309;
+        }
+
+        .approved {
+            color: #15803d;
+        }
+
+        .rejected {
+            color: #b91c1c;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 16px;
+            }
+
+            header h2 {
+                font-size: 18px;
+            }
+
+            main {
+                margin-top: 20px;
+                padding: 0 12px 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h2>EduReach | Admin Portal</h2>
+        <button id="logoutButton" class="secondary" type="button">
+            Log Out
+        </button>
+    </header>
+
+    <main>
+        <h1>Administrator Dashboard</h1>
+        <p>Manage teacher approvals and oversee EduReach accounts.</p>
+
+        <div id="pageMessage" class="notice" role="status" aria-live="polite">
+            Verifying administrator access...
+        </div>
+
+        <section id="dashboardContent" hidden>
+            <div class="stats">
+                <article class="card">
+                    <h3>Total Students</h3>
+                    <p id="studentCount" class="stat-number">0</p>
+                </article>
+
+                <article class="card">
+                    <h3>Total Teachers</h3>
+                    <p id="teacherCount" class="stat-number">0</p>
+                </article>
+
+                <article class="card">
+                    <h3>Pending Approvals</h3>
+                    <p id="pendingCount" class="stat-number">0</p>
+                </article>
+            </div>
+
+            <section class="card">
+                <h2>Teacher Registration Approvals</h2>
+                <p>Review teacher registrations before granting dashboard access.</p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>School</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="teacherTableBody">
+                            <tr>
+                                <td colspan="5">Loading teacher registrations...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="card" style="margin-top:24px;">
+                <h2>Registered Users</h2>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="4">Loading users...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="firebase.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async function () {
+            const message = document.getElementById("pageMessage");
+            const dashboard = document.getElementById("dashboardContent");
+            const logoutButton = document.getElementById("logoutButton");
+
+            let currentAdmin = null;
+            let isAuthorized = false;
+
+            function showMessage(text) {
+                message.textContent = text;
+                message.hidden = false;
+            }
+
+            function createCell(text) {
+                const cell = document.createElement("td");
+                cell.textContent = text == null ? "" : String(text);
+                return cell;
+            }
+
+            function setStatusClass(element, status) {
+                element.className = "status";
+
+                if (status === "approved") {
+                    element.classList.add("approved");
+                } else if (status === "rejected") {
+                    element.classList.add("rejected");
+                } else {
+                    element.classList.add("pending");
+                }
+            }
+
+            async function loadDashboard() {
+                const snapshot = await eduReachDB.collection("users").get();
+
+                if (!isAuthorized) return;
+
+                const users = [];
+
+                snapshot.forEach(function (doc) {
+                    users.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+
+                const students = users.filter(user => user.role === "student");
+                const teachers = users.filter(user => user.role === "teacher");
+
+                const pendingTeachers = teachers.filter(user =>
+                    user.approvalStatus !== "approved" ||
+                    user.status !== "approved"
+                );
+
+                document.getElementById("studentCount").textContent = students.length;
+                document.getElementById("teacherCount").textContent = teachers.length;
+                document.getElementById("pendingCount").textContent = pendingTeachers.length;
+
+                const teacherBody = document.getElementById("teacherTableBody");
+                teacherBody.replaceChildren();
+
+                if (teachers.length === 0) {
+                    const row = document.createElement("tr");
+                    row.appendChild(createCell("No teacher registrations found."));
+                    const emptyCell = row.firstElementChild;
+                    emptyCell.colSpan = 5;
+                    teacherBody.appendChild(row);
+                }
+
+                teachers.forEach(function (teacher) {
+                    const row = document.createElement("tr");
+                    const status = teacher.approvalStatus || teacher.status || "pending";
+
+                    row.appendChild(createCell(teacher.name || "Unnamed"));
+                    row.appendChild(createCell(teacher.email || ""));
+                    row.appendChild(createCell(teacher.school || "Not provided"));
+
+                    const statusCell = createCell(status);
+                    setStatusClass(statusCell, status);
+                    row.appendChild(statusCell);
+
+                    const actionsCell = document.createElement("td");
+                    const actions = document.createElement("div");
+                    actions.className = "actions";
+
+                    if (
+                        teacher.approvalStatus !== "approved" ||
+                        teacher.status !== "approved"
+                    ) {
+                        const approveButton = document.createElement("button");
+                        approveButton.type = "button";
+                        approveButton.className = "primary";
+                        approveButton.textContent = "Approve";
+
+                        approveButton.addEventListener("click", async function () {
+                            if (!confirm("Approve this teacher account?")) return;
+
+                            approveButton.disabled = true;
+
+                            try {
+                                await eduReachDB.collection("users").doc(teacher.id).update({
+                                    approvalStatus: "approved",
+                                    status: "approved",
+                                    approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                    approvedBy: currentAdmin.uid
+                                });
+
+                                showMessage("Teacher approved successfully.");
+                                await loadDashboard();
+                            } catch (error) {
+                                console.error("Approval error:", error);
+                                showMessage(
+                                    "Approval failed. Check Firestore Security Rules and the browser console."
+                                );
+                                approveButton.disabled = false;
+                            }
+                        });
+
+                        const rejectButton = document.createElement("button");
+                        rejectButton.type = "button";
+                        rejectButton.className = "danger";
+                        rejectButton.textContent = "Reject";
+
+                        rejectButton.addEventListener("click", async function () {
+                            if (!confirm("Reject this teacher registration?")) return;
+
+                            rejectButton.disabled = true;
+
+                            try {
+                                await eduReachDB.collection("users").doc(teacher.id).update({
+                                    approvalStatus: "rejected",
+                                    status: "rejected",
+                                    rejectedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                                    rejectedBy: currentAdmin.uid
+                                });
+
+                                showMessage("Teacher registration rejected.");
+                                await loadDashboard();
+                            } catch (error) {
+                                console.error("Rejection error:", error);
+                                showMessage(
+                                    "Rejection failed. Check Firestore Security Rules and the browser console."
+                                );
+                                rejectButton.disabled = false;
+                            }
+                        });
+
+                        actions.appendChild(approveButton);
+                        actions.appendChild(rejectButton);
+                    } else {
+                        actions.textContent = "No action needed";
+                    }
+
+                    actionsCell.appendChild(actions);
+                    row.appendChild(actionsCell);
+                    teacherBody.appendChild(row);
+                });
+
+                const usersBody = document.getElementById("usersTableBody");
+                usersBody.replaceChildren();
+
+                users.forEach(function (user) {
+                    const row = document.createElement("tr");
+                    row.appendChild(createCell(user.name || "Unnamed"));
+                    row.appendChild(createCell(user.email || ""));
+                    row.appendChild(createCell(user.role || "Unknown"));
+
+                    const status = user.role === "teacher"
+                        ? (user.approvalStatus || user.status || "pending")
+                        : "active";
+
+                    row.appendChild(createCell(status));
+                    usersBody.appendChild(row);
+                });
+            }
+
+            try {
+                const user = eduReachAuth.currentUser;
+
+                if (!user) {
+                    window.location.replace("login.html?role=admin");
+                    return;
+                }
+
+                const adminDoc = await eduReachDB
+                    .collection("users")
+                    .doc(user.uid)
+                    .get();
+
+                if (!adminDoc.exists || adminDoc.data().role !== "admin") {
+                    showMessage("Access denied. This page is only for administrators.");
+                    await eduReachAuth.signOut();
+                    window.location.replace("login.html?role=admin");
+                    return;
+                }
+
+                currentAdmin = user;
+                isAuthorized = true;
+
+                dashboard.hidden = false;
+                message.hidden = true;
+
+                await loadDashboard();
+
+            } catch (error) {
+                console.error("Admin dashboard error:", error);
+                showMessage(
+                    "Unable to load the admin dashboard. Your Firestore rules may not allow this operation."
+                );
+            }
+
+            logoutButton.addEventListener("click", async function () {
+                try {
+                    await eduReachAuth.signOut();
+                    window.location.href = "login.html?role=admin";
+                } catch (error) {
+                    console.error("Logout error:", error);
+                    showMessage("Unable to log out. Please try again.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
