@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard | EduReach</title>
-    <link rel="stylesheet" href="style.css?v=9">
+    <link rel="stylesheet" href="style.css?v=10">
 
     <style>
         body {
@@ -24,9 +24,7 @@
             border-bottom: 1px solid #e5e7eb;
         }
 
-        header h2 {
-            margin: 0;
-        }
+        header h2 { margin: 0; }
 
         button {
             cursor: pointer;
@@ -36,20 +34,14 @@
             font-weight: bold;
         }
 
-        .primary {
-            background: #6558f5;
-            color: white;
+        button:disabled {
+            opacity: 0.6;
+            cursor: wait;
         }
 
-        .danger {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .secondary {
-            background: #e5e7eb;
-            color: #172554;
-        }
+        .primary { background: #6558f5; color: white; }
+        .danger { background: #fee2e2; color: #991b1b; }
+        .secondary { background: #e5e7eb; color: #172554; }
 
         main {
             max-width: 1150px;
@@ -62,6 +54,7 @@
             margin: 20px 0;
             background: #eef2ff;
             border-radius: 10px;
+            overflow-wrap: anywhere;
         }
 
         .stats {
@@ -76,12 +69,11 @@
             border: 1px solid #e5e7eb;
             border-radius: 12px;
             padding: 22px;
+            margin-bottom: 24px;
             overflow-wrap: anywhere;
         }
 
-        .card h3 {
-            margin-top: 0;
-        }
+        .card h3 { margin-top: 0; }
 
         .stat-number {
             font-size: 30px;
@@ -89,9 +81,7 @@
             margin: 10px 0 0;
         }
 
-        .table-wrapper {
-            overflow-x: auto;
-        }
+        .table-wrapper { overflow-x: auto; }
 
         table {
             width: 100%;
@@ -105,9 +95,7 @@
             text-align: left;
         }
 
-        th {
-            background: #f8fafc;
-        }
+        th { background: #f8fafc; }
 
         .actions {
             display: flex;
@@ -115,35 +103,17 @@
             gap: 8px;
         }
 
-        .status {
-            font-weight: bold;
-        }
+        .status { font-weight: bold; }
+        .pending { color: #b45309; }
+        .approved { color: #15803d; }
+        .rejected { color: #b91c1c; }
 
-        .pending {
-            color: #b45309;
-        }
-
-        .approved {
-            color: #15803d;
-        }
-
-        .rejected {
-            color: #b91c1c;
-        }
+        [hidden] { display: none !important; }
 
         @media (max-width: 600px) {
-            header {
-                padding: 16px;
-            }
-
-            header h2 {
-                font-size: 18px;
-            }
-
-            main {
-                margin-top: 20px;
-                padding: 0 12px 30px;
-            }
+            header { padding: 16px; }
+            header h2 { font-size: 18px; }
+            main { margin-top: 20px; padding: 0 12px 30px; }
         }
     </style>
 </head>
@@ -161,7 +131,7 @@
         <p>Manage teacher approvals and oversee EduReach accounts.</p>
 
         <div id="pageMessage" class="notice" role="status" aria-live="polite">
-            Verifying administrator access...
+            Connecting to Firebase and checking administrator access...
         </div>
 
         <section id="dashboardContent" hidden>
@@ -197,17 +167,14 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-
                         <tbody id="teacherTableBody">
-                            <tr>
-                                <td colspan="5">Loading teacher registrations...</td>
-                            </tr>
+                            <tr><td colspan="5">Loading teacher registrations...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </section>
 
-            <section class="card" style="margin-top:24px;">
+            <section class="card">
                 <h2>Registered Users</h2>
 
                 <div class="table-wrapper">
@@ -220,11 +187,8 @@
                                 <th>Status</th>
                             </tr>
                         </thead>
-
                         <tbody id="usersTableBody">
-                            <tr>
-                                <td colspan="4">Loading users...</td>
-                            </tr>
+                            <tr><td colspan="4">Loading users...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -238,214 +202,187 @@
     <script src="firebase.js"></script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", async function () {
+        document.addEventListener("DOMContentLoaded", function () {
             const message = document.getElementById("pageMessage");
             const dashboard = document.getElementById("dashboardContent");
             const logoutButton = document.getElementById("logoutButton");
 
             let currentAdmin = null;
-            let isAuthorized = false;
 
             function showMessage(text) {
                 message.textContent = text;
                 message.hidden = false;
             }
 
-            function createCell(text) {
+            function makeCell(text) {
                 const cell = document.createElement("td");
                 cell.textContent = text == null ? "" : String(text);
                 return cell;
             }
 
-            function setStatusClass(element, status) {
-                element.className = "status";
+            function setStatusClass(cell, status) {
+                cell.className = "status";
 
                 if (status === "approved") {
-                    element.classList.add("approved");
+                    cell.classList.add("approved");
                 } else if (status === "rejected") {
-                    element.classList.add("rejected");
+                    cell.classList.add("rejected");
                 } else {
-                    element.classList.add("pending");
+                    cell.classList.add("pending");
                 }
             }
 
             async function loadDashboard() {
-                const snapshot = await eduReachDB.collection("users").get();
+                showMessage("Loading EduReach users...");
 
-                if (!isAuthorized) return;
+                try {
+                    const snapshot = await eduReachDB.collection("users").get();
+                    const users = [];
 
-                const users = [];
-
-                snapshot.forEach(function (doc) {
-                    users.push({
-                        id: doc.id,
-                        ...doc.data()
+                    snapshot.forEach(function (doc) {
+                        users.push({ id: doc.id, ...doc.data() });
                     });
-                });
 
-                const students = users.filter(user => user.role === "student");
-                const teachers = users.filter(user => user.role === "teacher");
+                    const students = users.filter(user => user.role === "student");
+                    const teachers = users.filter(user => user.role === "teacher");
 
-                const pendingTeachers = teachers.filter(user =>
-                    user.approvalStatus !== "approved" ||
-                    user.status !== "approved"
-                );
+                    const pendingTeachers = teachers.filter(user =>
+                        user.approvalStatus !== "approved" ||
+                        user.status !== "approved"
+                    );
 
-                document.getElementById("studentCount").textContent = students.length;
-                document.getElementById("teacherCount").textContent = teachers.length;
-                document.getElementById("pendingCount").textContent = pendingTeachers.length;
+                    document.getElementById("studentCount").textContent = students.length;
+                    document.getElementById("teacherCount").textContent = teachers.length;
+                    document.getElementById("pendingCount").textContent = pendingTeachers.length;
 
-                const teacherBody = document.getElementById("teacherTableBody");
-                teacherBody.replaceChildren();
+                    const teacherBody = document.getElementById("teacherTableBody");
+                    teacherBody.replaceChildren();
 
-                if (teachers.length === 0) {
-                    const row = document.createElement("tr");
-                    row.appendChild(createCell("No teacher registrations found."));
-                    const emptyCell = row.firstElementChild;
-                    emptyCell.colSpan = 5;
-                    teacherBody.appendChild(row);
-                }
-
-                teachers.forEach(function (teacher) {
-                    const row = document.createElement("tr");
-                    const status = teacher.approvalStatus || teacher.status || "pending";
-
-                    row.appendChild(createCell(teacher.name || "Unnamed"));
-                    row.appendChild(createCell(teacher.email || ""));
-                    row.appendChild(createCell(teacher.school || "Not provided"));
-
-                    const statusCell = createCell(status);
-                    setStatusClass(statusCell, status);
-                    row.appendChild(statusCell);
-
-                    const actionsCell = document.createElement("td");
-                    const actions = document.createElement("div");
-                    actions.className = "actions";
-
-                    if (
-                        teacher.approvalStatus !== "approved" ||
-                        teacher.status !== "approved"
-                    ) {
-                        const approveButton = document.createElement("button");
-                        approveButton.type = "button";
-                        approveButton.className = "primary";
-                        approveButton.textContent = "Approve";
-
-                        approveButton.addEventListener("click", async function () {
-                            if (!confirm("Approve this teacher account?")) return;
-
-                            approveButton.disabled = true;
-
-                            try {
-                                await eduReachDB.collection("users").doc(teacher.id).update({
-                                    approvalStatus: "approved",
-                                    status: "approved",
-                                    approvedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                                    approvedBy: currentAdmin.uid
-                                });
-
-                                showMessage("Teacher approved successfully.");
-                                await loadDashboard();
-                            } catch (error) {
-                                console.error("Approval error:", error);
-                                showMessage(
-                                    "Approval failed. Check Firestore Security Rules and the browser console."
-                                );
-                                approveButton.disabled = false;
-                            }
-                        });
-
-                        const rejectButton = document.createElement("button");
-                        rejectButton.type = "button";
-                        rejectButton.className = "danger";
-                        rejectButton.textContent = "Reject";
-
-                        rejectButton.addEventListener("click", async function () {
-                            if (!confirm("Reject this teacher registration?")) return;
-
-                            rejectButton.disabled = true;
-
-                            try {
-                                await eduReachDB.collection("users").doc(teacher.id).update({
-                                    approvalStatus: "rejected",
-                                    status: "rejected",
-                                    rejectedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                                    rejectedBy: currentAdmin.uid
-                                });
-
-                                showMessage("Teacher registration rejected.");
-                                await loadDashboard();
-                            } catch (error) {
-                                console.error("Rejection error:", error);
-                                showMessage(
-                                    "Rejection failed. Check Firestore Security Rules and the browser console."
-                                );
-                                rejectButton.disabled = false;
-                            }
-                        });
-
-                        actions.appendChild(approveButton);
-                        actions.appendChild(rejectButton);
-                    } else {
-                        actions.textContent = "No action needed";
+                    if (teachers.length === 0) {
+                        const row = document.createElement("tr");
+                        const cell = makeCell("No teacher registrations found.");
+                        cell.colSpan = 5;
+                        row.appendChild(cell);
+                        teacherBody.appendChild(row);
                     }
 
-                    actionsCell.appendChild(actions);
-                    row.appendChild(actionsCell);
-                    teacherBody.appendChild(row);
-                });
+                    teachers.forEach(function (teacher) {
+                        const row = document.createElement("tr");
+                        const status =
+                            teacher.approvalStatus || teacher.status || "pending";
 
-                const usersBody = document.getElementById("usersTableBody");
-                usersBody.replaceChildren();
+                        row.appendChild(makeCell(teacher.name || "Unnamed"));
+                        row.appendChild(makeCell(teacher.email || ""));
+                        row.appendChild(makeCell(teacher.school || "Not provided"));
 
-                users.forEach(function (user) {
-                    const row = document.createElement("tr");
-                    row.appendChild(createCell(user.name || "Unnamed"));
-                    row.appendChild(createCell(user.email || ""));
-                    row.appendChild(createCell(user.role || "Unknown"));
+                        const statusCell = makeCell(status);
+                        setStatusClass(statusCell, status);
+                        row.appendChild(statusCell);
 
-                    const status = user.role === "teacher"
-                        ? (user.approvalStatus || user.status || "pending")
-                        : "active";
+                        const actionsCell = document.createElement("td");
+                        const actions = document.createElement("div");
+                        actions.className = "actions";
 
-                    row.appendChild(createCell(status));
-                    usersBody.appendChild(row);
-                });
-            }
+                        if (status !== "approved") {
+                            const approve = document.createElement("button");
+                            approve.type = "button";
+                            approve.className = "primary";
+                            approve.textContent = "Approve";
 
-            try {
-                const user = eduReachAuth.currentUser;
+                            approve.addEventListener("click", async function () {
+                                if (!confirm("Approve this teacher account?")) return;
 
-                if (!user) {
-                    window.location.replace("login.html?role=admin");
-                    return;
+                                approve.disabled = true;
+
+                                try {
+                                    await eduReachDB.collection("users")
+                                        .doc(teacher.id).update({
+                                            approvalStatus: "approved",
+                                            status: "approved",
+                                            approvedAt:
+                                                firebase.firestore.FieldValue.serverTimestamp(),
+                                            approvedBy: currentAdmin.uid
+                                        });
+
+                                    showMessage("Teacher approved successfully.");
+                                    await loadDashboard();
+                                } catch (error) {
+                                    console.error("Teacher approval failed:", error);
+                                    showMessage(
+                                        "Approval failed. Firestore Security Rules may be blocking this action."
+                                    );
+                                    approve.disabled = false;
+                                }
+                            });
+
+                            const reject = document.createElement("button");
+                            reject.type = "button";
+                            reject.className = "danger";
+                            reject.textContent = "Reject";
+
+                            reject.addEventListener("click", async function () {
+                                if (!confirm("Reject this teacher registration?")) return;
+
+                                reject.disabled = true;
+
+                                try {
+                                    await eduReachDB.collection("users")
+                                        .doc(teacher.id).update({
+                                            approvalStatus: "rejected",
+                                            status: "rejected",
+                                            rejectedAt:
+                                                firebase.firestore.FieldValue.serverTimestamp(),
+                                            rejectedBy: currentAdmin.uid
+                                        });
+
+                                    showMessage("Teacher registration rejected.");
+                                    await loadDashboard();
+                                } catch (error) {
+                                    console.error("Teacher rejection failed:", error);
+                                    showMessage(
+                                        "Rejection failed. Firestore Security Rules may be blocking this action."
+                                    );
+                                    reject.disabled = false;
+                                }
+                            });
+
+                            actions.append(approve, reject);
+                        } else {
+                            actions.textContent = "No action needed";
+                        }
+
+                        actionsCell.appendChild(actions);
+                        row.appendChild(actionsCell);
+                        teacherBody.appendChild(row);
+                    });
+
+                    const usersBody = document.getElementById("usersTableBody");
+                    usersBody.replaceChildren();
+
+                    users.forEach(function (user) {
+                        const row = document.createElement("tr");
+
+                        row.appendChild(makeCell(user.name || "Unnamed"));
+                        row.appendChild(makeCell(user.email || ""));
+                        row.appendChild(makeCell(user.role || "Unknown"));
+
+                        const status = user.role === "teacher"
+                            ? (user.approvalStatus || user.status || "pending")
+                            : "active";
+
+                        row.appendChild(makeCell(status));
+                        usersBody.appendChild(row);
+                    });
+
+                    message.hidden = true;
+                    dashboard.hidden = false;
+                } catch (error) {
+                    console.error("Could not load users:", error);
+                    showMessage(
+                        "Your admin account was verified, but Firestore blocked the users list. The Firestore Security Rules need to be checked. Error: " +
+                        (error.code || error.message || "unknown error")
+                    );
                 }
-
-                const adminDoc = await eduReachDB
-                    .collection("users")
-                    .doc(user.uid)
-                    .get();
-
-                if (!adminDoc.exists || adminDoc.data().role !== "admin") {
-                    showMessage("Access denied. This page is only for administrators.");
-                    await eduReachAuth.signOut();
-                    window.location.replace("login.html?role=admin");
-                    return;
-                }
-
-                currentAdmin = user;
-                isAuthorized = true;
-
-                dashboard.hidden = false;
-                message.hidden = true;
-
-                await loadDashboard();
-
-            } catch (error) {
-                console.error("Admin dashboard error:", error);
-                showMessage(
-                    "Unable to load the admin dashboard. Your Firestore rules may not allow this operation."
-                );
             }
 
             logoutButton.addEventListener("click", async function () {
@@ -455,6 +392,50 @@
                 } catch (error) {
                     console.error("Logout error:", error);
                     showMessage("Unable to log out. Please try again.");
+                }
+            });
+
+            if (typeof firebase === "undefined" ||
+                typeof eduReachAuth === "undefined" ||
+                typeof eduReachDB === "undefined") {
+                showMessage(
+                    "Firebase did not initialize. Check that firebase.js and the Firebase SDK scripts loaded correctly."
+                );
+                return;
+            }
+
+            // Wait until Firebase has restored the authentication session.
+            eduReachAuth.onAuthStateChanged(async function (user) {
+                if (!user) {
+                    window.location.replace("login.html?role=admin");
+                    return;
+                }
+
+                try {
+                    showMessage("Checking administrator permissions...");
+
+                    const adminDoc = await eduReachDB
+                        .collection("users")
+                        .doc(user.uid)
+                        .get();
+
+                    if (!adminDoc.exists || adminDoc.data().role !== "admin") {
+                        showMessage(
+                            "Access denied. This account does not have the administrator role."
+                        );
+                        await eduReachAuth.signOut();
+                        window.location.replace("login.html?role=admin");
+                        return;
+                    }
+
+                    currentAdmin = user;
+                    await loadDashboard();
+                } catch (error) {
+                    console.error("Admin verification failed:", error);
+                    showMessage(
+                        "Could not verify administrator access. Check Firestore Security Rules. Error: " +
+                        (error.code || error.message || "unknown error")
+                    );
                 }
             });
         });
