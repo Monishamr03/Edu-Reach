@@ -1,6 +1,8 @@
 // EduReach - Login Logic
 
 document.addEventListener("DOMContentLoaded", function () {
+    "use strict";
+
     const loginForm = document.getElementById("loginForm");
     const loginButton = document.getElementById("loginButton");
     const emailInput = document.getElementById("email");
@@ -8,16 +10,26 @@ document.addEventListener("DOMContentLoaded", function () {
     const rememberMe = document.getElementById("rememberMe");
     const authMessage = document.getElementById("authMessage");
 
-    // Get selected role from URL
+    // Get the selected role from the URL.
     const urlParams = new URLSearchParams(window.location.search);
-    const selectedRole = urlParams.get("role") || "student";
+
+    const requestedRole = (
+        urlParams.get("role") || "student"
+    ).toLowerCase();
+
+    const validRoles = ["student", "teacher", "admin"];
+
+    const selectedRole = validRoles.includes(requestedRole)
+        ? requestedRole
+        : "student";
 
     console.log("EduReach login page loaded.");
     console.log("Selected role:", selectedRole);
 
     // --------------------------------------------------
-    // Helper: show message
+    // Show a message
     // --------------------------------------------------
+
     function showMessage(message, type) {
         if (!authMessage) return;
 
@@ -32,8 +44,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // --------------------------------------------------
-    // Helper: hide message
+    // Hide a message
     // --------------------------------------------------
+
     function hideMessage() {
         if (!authMessage) return;
 
@@ -43,57 +56,58 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // --------------------------------------------------
-    // Helper: loading state
+    // Loading state
     // --------------------------------------------------
+
     function setLoading(isLoading) {
         if (!loginButton) return;
 
-        if (isLoading) {
-            loginButton.disabled = true;
-            loginButton.textContent = "Signing in...";
-            loginButton.style.opacity = "0.7";
-            loginButton.style.cursor = "not-allowed";
-        } else {
-            loginButton.disabled = false;
-            loginButton.textContent = "Sign In";
-            loginButton.style.opacity = "1";
-            loginButton.style.cursor = "pointer";
-        }
+        loginButton.disabled = isLoading;
+
+        loginButton.textContent = isLoading
+            ? "Signing in..."
+            : "Sign In";
+
+        loginButton.style.opacity = isLoading ? "0.7" : "1";
+
+        loginButton.style.cursor = isLoading
+            ? "not-allowed"
+            : "pointer";
     }
 
     // --------------------------------------------------
-    // Check Firebase
+    // Check Firebase configuration
     // --------------------------------------------------
+
     if (typeof firebase === "undefined") {
         console.error("Firebase SDK is not loaded.");
+
         showMessage(
             "Firebase could not be loaded. Please refresh the page.",
             "error"
         );
+
         return;
     }
 
-    if (typeof eduReachAuth === "undefined") {
-        console.error("eduReachAuth is not available.");
-        showMessage(
-            "Authentication is not configured correctly.",
-            "error"
-        );
-        return;
-    }
+    if (
+        typeof eduReachAuth === "undefined" ||
+        typeof eduReachDB === "undefined"
+    ) {
+        console.error("EduReach Firebase services are unavailable.");
 
-    if (typeof eduReachDB === "undefined") {
-        console.error("eduReachDB is not available.");
         showMessage(
-            "Database is not configured correctly.",
+            "Authentication or database configuration is unavailable.",
             "error"
         );
+
         return;
     }
 
     // --------------------------------------------------
     // Login
     // --------------------------------------------------
+
     async function loginUser() {
         hideMessage();
 
@@ -105,9 +119,11 @@ document.addEventListener("DOMContentLoaded", function () {
             ? passwordInput.value
             : "";
 
-        // Basic validation
         if (!email) {
-            showMessage("Please enter your email address.", "error");
+            showMessage(
+                "Please enter your email address.",
+                "error"
+            );
 
             if (emailInput) {
                 emailInput.focus();
@@ -117,7 +133,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (!password) {
-            showMessage("Please enter your password.", "error");
+            showMessage(
+                "Please enter your password.",
+                "error"
+            );
 
             if (passwordInput) {
                 passwordInput.focus();
@@ -128,40 +147,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
         setLoading(true);
 
-        try {
-            console.log("Attempting Firebase sign-in...");
+        let authenticatedUser = null;
 
-            // Firebase Authentication
+        try {
+            // Authenticate with Firebase.
             const userCredential =
                 await eduReachAuth.signInWithEmailAndPassword(
                     email,
                     password
                 );
 
-            const user = userCredential.user;
+            authenticatedUser = userCredential.user;
 
             console.log("Firebase sign-in successful.");
-            console.log("User UID:", user.uid);
-            console.log("User email:", user.email);
+            console.log("Authenticated UID:", authenticatedUser.uid);
 
-            // --------------------------------------------------
-            // Get user's Firestore profile
-            // --------------------------------------------------
+            // Retrieve the EduReach profile.
             const userDoc = await eduReachDB
                 .collection("users")
-                .doc(user.uid)
+                .doc(authenticatedUser.uid)
                 .get();
 
             if (!userDoc.exists) {
-                console.error(
-                    "No Firestore profile found for:",
-                    user.uid
-                );
+                console.error("Firestore profile not found.");
 
                 await eduReachAuth.signOut();
 
                 showMessage(
-                    "Your account exists, but your EduReach profile could not be found. Please contact the administrator.",
+                    "Your account exists, but your EduReach profile is missing. Please contact the administrator.",
                     "error"
                 );
 
@@ -170,21 +183,19 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             const profile = userDoc.data();
-
-            console.log("User profile:", profile);
-
             const actualRole = profile.role;
 
-            // --------------------------------------------------
-            // Verify role
-            // --------------------------------------------------
-            if (!actualRole) {
-                console.error("User profile has no role.");
+            console.log("Account role:", actualRole);
 
+            // --------------------------------------------------
+            // Validate the stored role
+            // --------------------------------------------------
+
+            if (!validRoles.includes(actualRole)) {
                 await eduReachAuth.signOut();
 
                 showMessage(
-                    "Your account does not have a valid EduReach role. Please contact the administrator.",
+                    "Your account has an invalid EduReach role. Please contact the administrator.",
                     "error"
                 );
 
@@ -192,16 +203,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // Do not allow someone to enter through the wrong role page.
-            if (actualRole !== selectedRole) {
-                console.warn(
-                    "Role mismatch.",
-                    "Selected:",
-                    selectedRole,
-                    "Actual:",
-                    actualRole
-                );
+            // --------------------------------------------------
+            // Check that the selected role matches the profile
+            // --------------------------------------------------
 
+            if (actualRole !== selectedRole) {
                 await eduReachAuth.signOut();
 
                 showMessage(
@@ -216,8 +222,39 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             // --------------------------------------------------
-            // Save remember-me preference
+            // TEACHER APPROVAL CHECK
             // --------------------------------------------------
+
+            if (actualRole === "teacher") {
+                const status = String(
+                    profile.status || ""
+                ).toLowerCase();
+
+                const approvalStatus = String(
+                    profile.approvalStatus || ""
+                ).toLowerCase();
+
+                // Both fields must explicitly say approved.
+                if (
+                    status !== "approved" ||
+                    approvalStatus !== "approved"
+                ) {
+                    await eduReachAuth.signOut();
+
+                    showMessage(
+                        "Your teacher account is awaiting administrator approval. You can sign in after your account has been approved.",
+                        "error"
+                    );
+
+                    setLoading(false);
+                    return;
+                }
+            }
+
+            // --------------------------------------------------
+            // Remember email
+            // --------------------------------------------------
+
             if (rememberMe && rememberMe.checked) {
                 localStorage.setItem(
                     "eduReachRememberEmail",
@@ -232,32 +269,25 @@ document.addEventListener("DOMContentLoaded", function () {
             // --------------------------------------------------
             // Redirect according to role
             // --------------------------------------------------
+
             if (actualRole === "student") {
                 window.location.href = "student-dashboard.html";
-            } else if (actualRole === "teacher") {
+                return;
+            }
+
+            if (actualRole === "teacher") {
                 window.location.href = "teacher-dashboard.html";
-            } else if (actualRole === "admin") {
+                return;
+            }
+
+            if (actualRole === "admin") {
                 window.location.href = "admin-dashboard.html";
-            } else {
-                console.error(
-                    "Unknown role:",
-                    actualRole
-                );
-
-                await eduReachAuth.signOut();
-
-                showMessage(
-                    "Your account has an unsupported role. Please contact the administrator.",
-                    "error"
-                );
-
-                setLoading(false);
+                return;
             }
 
         } catch (error) {
             console.error("Firebase login error:", error);
             console.error("Error code:", error.code);
-            console.error("Error message:", error.message);
 
             let message =
                 "Unable to sign in. Please try again.";
@@ -275,7 +305,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 case "auth/wrong-password":
                     message =
-                        "Incorrect password. Please try again.";
+                        "The email or password is incorrect.";
                     break;
 
                 case "auth/invalid-credential":
@@ -295,19 +325,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 case "auth/network-request-failed":
                     message =
-                        "Network error. Please check your internet connection and try again.";
+                        "Network error. Check your internet connection and try again.";
                     break;
 
                 case "permission-denied":
                 case "firestore/permission-denied":
                     message =
-                        "Your account was authenticated, but EduReach could not read your profile. Please check your Firestore permissions.";
+                        "EduReach could not read your profile. Please check your database permissions.";
                     break;
 
                 default:
                     message =
-                        error.message ||
-                        "Unable to sign in. Please try again.";
+                        "Unable to sign in. Please check your details and try again.";
+            }
+
+            // Sign out if authentication succeeded but a later
+            // step failed, such as reading the profile.
+            if (authenticatedUser) {
+                try {
+                    await eduReachAuth.signOut();
+                } catch (signOutError) {
+                    console.error(
+                        "Could not sign out after login failure:",
+                        signOutError
+                    );
+                }
             }
 
             showMessage(message, "error");
@@ -316,8 +358,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // --------------------------------------------------
-    // Form submit
+    // Form submission
     // --------------------------------------------------
+
     if (loginForm) {
         loginForm.addEventListener("submit", function (event) {
             event.preventDefault();
@@ -325,9 +368,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // --------------------------------------------------
-    // Button click fallback
-    // --------------------------------------------------
+    // Fallback for pages without a login form.
     if (loginButton && !loginForm) {
         loginButton.addEventListener("click", function (event) {
             event.preventDefault();
@@ -338,14 +379,23 @@ document.addEventListener("DOMContentLoaded", function () {
     // --------------------------------------------------
     // Remembered email
     // --------------------------------------------------
-    const rememberedEmail =
-        localStorage.getItem("eduReachRememberEmail");
 
-    if (rememberedEmail && emailInput) {
-        emailInput.value = rememberedEmail;
+    try {
+        const rememberedEmail = localStorage.getItem(
+            "eduReachRememberEmail"
+        );
 
-        if (rememberMe) {
-            rememberMe.checked = true;
+        if (rememberedEmail && emailInput) {
+            emailInput.value = rememberedEmail;
+
+            if (rememberMe) {
+                rememberMe.checked = true;
+            }
         }
+    } catch (error) {
+        console.warn(
+            "Remembered email could not be loaded.",
+            error
+        );
     }
 });
