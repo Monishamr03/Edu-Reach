@@ -3,11 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta
         name="description"
@@ -18,47 +14,31 @@
 
     <title>Sign In | EduReach</title>
 
-    <link
-        rel="stylesheet"
-        href="style.css?v=7"
-    >
+    <link rel="stylesheet" href="style.css?v=8">
 
     <style>
-        /* =========================================
-           LOGIN BUTTON
-        ========================================== */
-
+        /* Login button */
         #loginButton {
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-
             width: 100% !important;
             min-height: 52px !important;
-
             margin-top: 20px !important;
             padding: 15px 20px !important;
-
             border: 0 !important;
             border-radius: 12px !important;
-
             background: #6D5DFC !important;
             color: #ffffff !important;
-
             font-family: inherit !important;
             font-size: 16px !important;
             font-weight: 700 !important;
-
             line-height: 1.2 !important;
             text-align: center !important;
-
             cursor: pointer !important;
-
             box-sizing: border-box !important;
-
             appearance: none !important;
             -webkit-appearance: none !important;
-
             opacity: 1 !important;
             visibility: visible !important;
         }
@@ -76,28 +56,19 @@
             cursor: not-allowed !important;
         }
 
-        /* =========================================
-           LOGIN MESSAGE
-        ========================================== */
-
+        /* Login messages */
         #authMessage {
             display: none;
             width: 100%;
             margin-top: 14px;
         }
 
-        /* =========================================
-           PASSWORD TOGGLE
-        ========================================== */
-
+        /* Password toggle */
         .password-toggle {
             cursor: pointer !important;
         }
 
-        /* =========================================
-           ACCOUNT TYPE
-        ========================================== */
-
+        /* Account type */
         .account-type {
             display: flex;
             align-items: center;
@@ -133,10 +104,6 @@
             font-weight: 800;
         }
 
-        /* =========================================
-           ROLE-SPECIFIC INTRODUCTION
-        ========================================== */
-
         #roleDescription {
             margin-top: 5px;
             color: #7B839A;
@@ -144,27 +111,37 @@
             line-height: 1.6;
         }
 
-        /* =========================================
-           ACCESSIBILITY
-        ========================================== */
+        /* Registration links */
+        .auth-switch {
+            margin-top: 22px;
+            text-align: center;
+            line-height: 1.8;
+        }
 
+        .auth-switch a {
+            display: block;
+            margin-top: 4px;
+            font-weight: 700;
+        }
+
+        /* Accessibility */
         button:focus-visible,
         a:focus-visible,
         input:focus-visible {
             outline: 3px solid rgba(109, 93, 252, 0.35);
             outline-offset: 3px;
         }
+
+        [hidden] {
+            display: none !important;
+        }
     </style>
 </head>
 
 <body>
 
-    <!-- =========================================
-         HEADER
-    ========================================== -->
-
+    <!-- Header -->
     <header class="auth-header">
-
         <div class="auth-header-inner">
 
             <a
@@ -175,30 +152,19 @@
                 EduReach
             </a>
 
-            <a
-                href="index.html"
-                class="back-link"
-            >
+            <a href="index.html" class="back-link">
                 ← Back to Home
             </a>
 
         </div>
-
     </header>
 
-
-    <!-- =========================================
-         MAIN LOGIN PAGE
-    ========================================== -->
-
+    <!-- Main login page -->
     <main class="auth-page">
 
         <div class="auth-layout">
 
-            <!-- =================================
-                 LEFT SIDE
-            ================================== -->
-
+            <!-- Introduction -->
             <section class="auth-intro">
 
                 <div class="auth-badge">
@@ -213,93 +179,55 @@
                     class="auth-intro-text"
                     id="introDescription"
                 >
-                    Sign in to continue your EduReach
-                    learning journey.
+                    Sign in to continue your EduReach learning journey.
                 </p>
 
-
-                <!-- Feature 1 -->
-
                 <div class="auth-feature">
-
-                    <div class="feature-icon">
-                        📚
-                    </div>
+                    <div class="feature-icon">📚</div>
 
                     <div>
-
                         <h3 id="featureOneTitle">
                             Continue learning
                         </h3>
 
                         <p id="featureOneDescription">
-                            Pick up your courses and lessons
-                            where you left off.
+                            Pick up your courses and lessons where you left off.
                         </p>
-
                     </div>
-
                 </div>
 
-
-                <!-- Feature 2 -->
-
                 <div class="auth-feature">
-
-                    <div class="feature-icon">
-                        ⭐
-                    </div>
+                    <div class="feature-icon">⭐</div>
 
                     <div>
-
                         <h3 id="featureTwoTitle">
                             Track your progress
                         </h3>
 
                         <p id="featureTwoDescription">
-                            Keep your XP, achievements
-                            and learning streak.
+                            Keep your XP, achievements and learning streak.
                         </p>
-
                     </div>
-
                 </div>
 
-
-                <!-- Feature 3 -->
-
                 <div class="auth-feature">
-
-                    <div class="feature-icon">
-                        🔒
-                    </div>
+                    <div class="feature-icon">🔒</div>
 
                     <div>
-
-                        <h3>
-                            Secure account
-                        </h3>
+                        <h3>Secure account</h3>
 
                         <p>
-                            Your account is protected by
-                            Firebase Authentication.
+                            Your account is protected by Firebase Authentication.
                         </p>
-
                     </div>
-
                 </div>
 
             </section>
 
-
-            <!-- =================================
-                 LOGIN CARD
-            ================================== -->
-
+            <!-- Login card -->
             <section class="auth-card">
 
                 <!-- Account type -->
-
                 <div class="account-type">
 
                     <div
@@ -311,40 +239,22 @@
                     </div>
 
                     <div>
+                        <span>ACCOUNT TYPE</span>
 
-                        <span>
-                            ACCOUNT TYPE
-                        </span>
-
-                        <strong id="roleTitle">
-                            Student
-                        </strong>
+                        <strong id="roleTitle">Student</strong>
 
                         <p id="roleDescription">
                             Access your courses and learning progress.
                         </p>
-
                     </div>
 
                 </div>
 
-
-                <!-- =================================
-                     LOGIN FORM
-                ================================== -->
-
-                <form
-                    id="loginForm"
-                    novalidate
-                >
-
-                    <!-- Email -->
+                <!-- Login form -->
+                <form id="loginForm" novalidate>
 
                     <div class="form-group">
-
-                        <label for="email">
-                            Email address
-                        </label>
+                        <label for="email">Email address</label>
 
                         <input
                             type="email"
@@ -354,20 +264,12 @@
                             autocomplete="username"
                             required
                         >
-
                     </div>
 
-
-                    <!-- Password -->
-
                     <div class="form-group">
-
-                        <label for="password">
-                            Password
-                        </label>
+                        <label for="password">Password</label>
 
                         <div class="password-field">
-
                             <input
                                 type="password"
                                 id="password"
@@ -386,42 +288,29 @@
                             >
                                 👁
                             </button>
-
                         </div>
-
                     </div>
 
-
-                    <!-- Remember + Forgot -->
-
+                    <!-- Remember me and password reset -->
                     <div class="login-options">
 
                         <label class="checkbox-row">
-
                             <input
                                 type="checkbox"
                                 id="rememberMe"
                                 name="rememberMe"
                             >
 
-                            <span>
-                                Remember me
-                            </span>
-
+                            <span>Remember me</span>
                         </label>
 
-                        <a
-                            href="#"
-                            id="forgotPassword"
-                        >
+                        <a href="#" id="forgotPassword">
                             Forgot password?
                         </a>
 
                     </div>
 
-
-                    <!-- Firebase message -->
-
+                    <!-- Authentication messages -->
                     <div
                         id="authMessage"
                         class="auth-message"
@@ -429,48 +318,65 @@
                         aria-live="polite"
                     ></div>
 
-
-                    <!-- Sign in button -->
-
-                    <button
-                        type="submit"
-                        id="loginButton"
-                    >
+                    <!-- Sign in -->
+                    <button type="submit" id="loginButton">
                         Sign In
                     </button>
 
-
                     <!-- Student registration -->
-
                     <div
                         id="studentRegisterPrompt"
                         class="auth-switch"
+                        hidden
                     >
-
-                        <span>
-                            New to EduReach?
-                        </span>
+                        <span>New to EduReach?</span>
 
                         <a href="register.html">
                             Create a student account
                         </a>
-
                     </div>
 
+                    <!-- Teacher registration -->
+                    <div
+                        id="teacherRegisterPrompt"
+                        class="auth-switch"
+                        hidden
+                    >
+                        <span>New to EduReach?</span>
 
-                    <!-- Security -->
+                        <a href="teacher-register.html">
+                            Create a teacher account
+                        </a>
 
-                    <div class="security-note">
+                        <p>
+                            Your account requires administrator approval
+                            before you can access the Teacher Dashboard.
+                        </p>
+                    </div>
+
+                    <!-- Administrator notice -->
+                    <div
+                        id="adminLoginNotice"
+                        class="security-note"
+                        hidden
+                    >
+                        <span>🔐</span>
 
                         <span>
-                            🔒
+                            Administrator accounts are created separately.
+                            Contact your platform administrator if you need
+                            account access.
                         </span>
+                    </div>
+
+                    <!-- Security notice -->
+                    <div class="security-note">
+                        <span>🔒</span>
 
                         <span>
                             Your password is securely managed by
                             Firebase Authentication.
                         </span>
-
                     </div>
 
                 </form>
@@ -481,24 +387,14 @@
 
     </main>
 
-
-    <!-- =========================================
-         FIREBASE SDK
-    ========================================== -->
-
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
     <script src="firebase.js"></script>
 
-
-    <!-- =========================================
-         ROLE SELECTION AND LOGIN LOGIC
-    ========================================== -->
-
+    <!-- Role-specific page content -->
     <script>
         (function () {
             "use strict";
@@ -527,11 +423,14 @@
                     icon: "🎓",
                     description: "Access your courses and learning progress.",
                     heading: "Welcome back.",
-                    introduction: "Sign in to continue your EduReach learning journey.",
+                    introduction:
+                        "Sign in to continue your EduReach learning journey.",
                     featureOneTitle: "Continue learning",
-                    featureOneDescription: "Pick up your courses and lessons where you left off.",
+                    featureOneDescription:
+                        "Pick up your courses and lessons where you left off.",
                     featureTwoTitle: "Track your progress",
-                    featureTwoDescription: "Keep your XP, achievements and learning streak."
+                    featureTwoDescription:
+                        "Keep your XP, achievements and learning streak."
                 },
 
                 teacher: {
@@ -539,11 +438,14 @@
                     icon: "👨‍🏫",
                     description: "Access your teaching workspace.",
                     heading: "Welcome, educator.",
-                    introduction: "Sign in to manage your teaching activities on EduReach.",
+                    introduction:
+                        "Sign in to manage your teaching activities on EduReach.",
                     featureOneTitle: "Manage your courses",
-                    featureOneDescription: "Organize learning content and prepare lessons for your students.",
+                    featureOneDescription:
+                        "Organize learning content and prepare lessons for your students.",
                     featureTwoTitle: "Support your students",
-                    featureTwoDescription: "Help learners grow through engaging STEM education."
+                    featureTwoDescription:
+                        "Help learners grow through engaging STEM education."
                 },
 
                 admin: {
@@ -551,11 +453,14 @@
                     icon: "⚙️",
                     description: "Access the EduReach administration portal.",
                     heading: "Welcome, administrator.",
-                    introduction: "Sign in to manage the EduReach learning platform.",
+                    introduction:
+                        "Sign in to manage the EduReach learning platform.",
                     featureOneTitle: "Manage the platform",
-                    featureOneDescription: "Access administration tools for the EduReach platform.",
+                    featureOneDescription:
+                        "Access administration tools for the EduReach platform.",
                     featureTwoTitle: "Oversee learning",
-                    featureTwoDescription: "Support the organization of students, teachers and courses."
+                    featureTwoDescription:
+                        "Manage students, teachers and platform activities."
                 }
             };
 
@@ -590,9 +495,18 @@
             document.getElementById("featureTwoDescription").textContent =
                 settings.featureTwoDescription;
 
-            // Student registration is only shown to students.
-            document.getElementById("studentRegisterPrompt").style.display =
-                selectedRole === "student" ? "" : "none";
+            // Display registration options for the selected role.
+            document.getElementById("studentRegisterPrompt").hidden =
+                selectedRole !== "student";
+
+            document.getElementById("teacherRegisterPrompt").hidden =
+                selectedRole !== "teacher";
+
+            document.getElementById("adminLoginNotice").hidden =
+                selectedRole !== "admin";
+
+            // Make the selected role available to the existing login code.
+            window.eduReachSelectedRole = selectedRole;
 
             console.log(
                 "EduReach: Selected login role:",
@@ -601,13 +515,10 @@
         })();
     </script>
 
-    <!-- Existing authentication logic -->
-    <script src="login.js?v=5"></script>
+    <!-- Existing Firebase login logic -->
+    <script src="login.js?v=6"></script>
 
-    <!-- =========================================
-         PASSWORD VISIBILITY AND PASSWORD RESET
-    ========================================== -->
-
+    <!-- Password visibility and password reset -->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
 
@@ -626,7 +537,7 @@
             const authMessage =
                 document.getElementById("authMessage");
 
-            // Show or hide the password.
+            // Show or hide password.
             if (passwordInput && passwordToggle) {
 
                 passwordToggle.addEventListener("click", function () {
@@ -655,92 +566,97 @@
             // Password reset through Firebase Authentication.
             if (forgotPassword) {
 
-                forgotPassword.addEventListener("click", async function (event) {
+                forgotPassword.addEventListener(
+                    "click",
+                    async function (event) {
 
-                    event.preventDefault();
+                        event.preventDefault();
 
-                    const email = emailInput
-                        ? emailInput.value.trim()
-                        : "";
+                        const email = emailInput
+                            ? emailInput.value.trim()
+                            : "";
 
-                    if (!email) {
+                        if (!email) {
 
-                        if (authMessage) {
-                            authMessage.textContent =
-                                "Enter your email address first, then select Forgot password.";
+                            if (authMessage) {
+                                authMessage.textContent =
+                                    "Enter your email address first, then select Forgot password.";
 
-                            authMessage.className =
-                                "auth-message error";
+                                authMessage.className =
+                                    "auth-message error";
 
-                            authMessage.style.display = "block";
+                                authMessage.style.display = "block";
+                            }
+
+                            if (emailInput) {
+                                emailInput.focus();
+                            }
+
+                            return;
                         }
 
-                        if (emailInput) {
-                            emailInput.focus();
+                        if (
+                            typeof firebase === "undefined" ||
+                            !window.eduReachAuth
+                        ) {
+                            if (authMessage) {
+                                authMessage.textContent =
+                                    "Firebase is not available. Please refresh the page and try again.";
+
+                                authMessage.className =
+                                    "auth-message error";
+
+                                authMessage.style.display = "block";
+                            }
+
+                            return;
                         }
 
-                        return;
+                        try {
+
+                            await window.eduReachAuth
+                                .sendPasswordResetEmail(email);
+
+                            if (authMessage) {
+                                authMessage.textContent =
+                                    "If an account exists for this email, a password reset email will be sent. Check your inbox.";
+
+                                authMessage.className =
+                                    "auth-message success";
+
+                                authMessage.style.display = "block";
+                            }
+
+                        } catch (error) {
+
+                            console.error(
+                                "Password reset error:",
+                                error
+                            );
+
+                            let message =
+                                "Unable to send the password reset email. Please try again.";
+
+                            if (error.code === "auth/invalid-email") {
+                                message =
+                                    "Please enter a valid email address.";
+                            } else if (
+                                error.code === "auth/too-many-requests"
+                            ) {
+                                message =
+                                    "Too many attempts. Please wait and try again.";
+                            }
+
+                            if (authMessage) {
+                                authMessage.textContent = message;
+                                authMessage.className =
+                                    "auth-message error";
+                                authMessage.style.display = "block";
+                            }
+                        }
                     }
-
-                    if (
-                        typeof firebase === "undefined" ||
-                        !window.eduReachAuth
-                    ) {
-                        if (authMessage) {
-                            authMessage.textContent =
-                                "Firebase is not available. Please refresh the page and try again.";
-
-                            authMessage.className =
-                                "auth-message error";
-
-                            authMessage.style.display = "block";
-                        }
-
-                        return;
-                    }
-
-                    try {
-
-                        await window.eduReachAuth
-                            .sendPasswordResetEmail(email);
-
-                        if (authMessage) {
-                            authMessage.textContent =
-                                "If an account exists for this email, a password reset email will be sent. Check your inbox.";
-
-                            authMessage.className =
-                                "auth-message success";
-
-                            authMessage.style.display = "block";
-                        }
-
-                    } catch (error) {
-
-                        console.error(
-                            "Password reset error:",
-                            error
-                        );
-
-                        let message =
-                            "Unable to send the password reset email. Please try again.";
-
-                        if (error.code === "auth/invalid-email") {
-                            message =
-                                "Please enter a valid email address.";
-                        } else if (error.code === "auth/too-many-requests") {
-                            message =
-                                "Too many attempts. Please wait and try again.";
-                        }
-
-                        if (authMessage) {
-                            authMessage.textContent = message;
-                            authMessage.className = "auth-message error";
-                            authMessage.style.display = "block";
-                        }
-                    }
-                });
+                );
             }
-
         });
     </script>
 
