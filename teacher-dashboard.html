@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <meta
+        name="description"
+        content="EduReach Teacher Dashboard for managing courses, lessons, students and teaching analytics."
+    >
+
+    <meta name="theme-color" content="#6558f5">
+
     <title>Teacher Dashboard | EduReach</title>
 
-    <link rel="stylesheet" href="style.css?v=10">
+    <link rel="stylesheet" href="style.css?v=11">
 
     <style>
         * {
@@ -44,6 +52,12 @@
             font-size: 15px;
         }
 
+        button:focus-visible,
+        a:focus-visible {
+            outline: 3px solid #6558f5;
+            outline-offset: 4px;
+        }
+
         .logout-button {
             background: #e5e7eb;
             color: #172554;
@@ -51,6 +65,11 @@
 
         .logout-button:hover {
             background: #d1d5db;
+        }
+
+        .logout-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.65;
         }
 
         main {
@@ -66,12 +85,14 @@
         .page-heading h1 {
             font-size: 36px;
             margin: 0 0 12px;
+            overflow-wrap: anywhere;
         }
 
         .page-heading p {
             font-size: 18px;
             line-height: 1.6;
             margin: 0;
+            color: #4b5563;
         }
 
         .notice {
@@ -80,6 +101,16 @@
             background: #eef2ff;
             border-radius: 10px;
             line-height: 1.6;
+        }
+
+        .notice.error {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .notice.success {
+            background: #f0fdf4;
+            color: #166534;
         }
 
         .workspace-heading {
@@ -96,7 +127,8 @@
         .teacher-card {
             display: flex;
             flex-direction: column;
-            min-height: 235px;
+            min-width: 0;
+            min-height: 245px;
             padding: 25px;
             background: #ffffff;
             border: 1px solid #e5e7eb;
@@ -115,17 +147,13 @@
             box-shadow: 0 10px 24px rgba(23, 37, 84, 0.10);
         }
 
-        .teacher-card:focus-visible {
-            outline: 3px solid #6558f5;
-            outline-offset: 4px;
-        }
-
         .card-icon {
             display: flex;
             align-items: center;
             justify-content: center;
             width: 55px;
             height: 55px;
+            flex-shrink: 0;
             margin-bottom: 18px;
             background: #f0edff;
             border-radius: 12px;
@@ -145,6 +173,7 @@
         }
 
         .card-link {
+            display: inline-block;
             margin-top: auto;
             color: #6558f5;
             font-weight: bold;
@@ -161,12 +190,16 @@
 
         .footer-note {
             margin-top: 35px;
-            padding: 18px;
+            padding: 20px;
             background: #ffffff;
             border: 1px solid #e5e7eb;
             border-radius: 10px;
             color: #4b5563;
             line-height: 1.7;
+        }
+
+        .footer-note p {
+            margin-bottom: 0;
         }
 
         [hidden] {
@@ -206,7 +239,7 @@
             }
 
             .teacher-card {
-                min-height: 210px;
+                min-height: 215px;
             }
         }
     </style>
@@ -354,10 +387,11 @@
 
             <div class="footer-note">
                 <strong>Your teaching workspace</strong>
+
                 <p>
                     Use the sections above to access your teaching tools.
-                    New features will become available as the course,
-                    lesson and reporting pages are implemented.
+                    Course creation, lesson management, student information
+                    and analytics will be connected as those pages are built.
                 </p>
             </div>
 
@@ -381,33 +415,84 @@
             const logoutButton = document.getElementById("logoutButton");
             const teacherContent = document.getElementById("teacherContent");
 
-            let isApprovedTeacher = false;
-
-            function showMessage(text) {
+            function showMessage(text, type) {
                 message.textContent = text;
+                message.className = "notice";
+
+                if (type) {
+                    message.classList.add(type);
+                }
+
                 message.hidden = false;
             }
 
-            // Verify the signed-in user and teacher approval.
-            try {
-                const user = eduReachAuth.currentUser;
+            // Make sure Firebase is configured.
+            if (
+                typeof firebase === "undefined" ||
+                typeof eduReachAuth === "undefined" ||
+                typeof eduReachDB === "undefined"
+            ) {
+                showMessage(
+                    "Firebase could not be initialized. Please refresh the page and try again.",
+                    "error"
+                );
+                return;
+            }
 
+            try {
+
+                /*
+                 * Wait for Firebase to restore the authentication session.
+                 * Reading currentUser immediately can return null while
+                 * Firebase is still initializing.
+                 */
+                const user = await new Promise(function (resolve, reject) {
+
+                    let unsubscribe = null;
+
+                    try {
+                        unsubscribe = eduReachAuth.onAuthStateChanged(
+                            function (currentUser) {
+                                if (unsubscribe) {
+                                    unsubscribe();
+                                }
+
+                                resolve(currentUser);
+                            },
+                            function (error) {
+                                if (unsubscribe) {
+                                    unsubscribe();
+                                }
+
+                                reject(error);
+                            }
+                        );
+                    } catch (error) {
+                        reject(error);
+                    }
+
+                });
+
+                // No signed-in user: return to teacher login.
                 if (!user) {
                     window.location.replace("login.html?role=teacher");
                     return;
                 }
 
+                // Load the profile belonging to the authenticated user.
                 const snapshot = await eduReachDB
                     .collection("users")
                     .doc(user.uid)
                     .get();
 
                 if (!snapshot.exists) {
-                    showMessage(
-                        "Your EduReach profile could not be found. Please contact the administrator."
-                    );
 
                     await eduReachAuth.signOut();
+
+                    showMessage(
+                        "Your EduReach profile could not be found. Please contact the administrator.",
+                        "error"
+                    );
 
                     window.location.replace("login.html?role=teacher");
                     return;
@@ -415,10 +500,8 @@
 
                 const profile = snapshot.data();
 
+                // Only teacher accounts can use this dashboard.
                 if (profile.role !== "teacher") {
-                    showMessage(
-                        "Access denied. This page is only for teacher accounts."
-                    );
 
                     await eduReachAuth.signOut();
 
@@ -426,13 +509,14 @@
                     return;
                 }
 
+                /*
+                 * Require BOTH fields to be approved.
+                 * This matches the approval checks used in login.js.
+                 */
                 if (
                     profile.approvalStatus !== "approved" ||
                     profile.status !== "approved"
                 ) {
-                    showMessage(
-                        "Your teacher account is awaiting administrator approval. You cannot access the dashboard yet."
-                    );
 
                     await eduReachAuth.signOut();
 
@@ -440,49 +524,54 @@
                     return;
                 }
 
-                // The teacher is authenticated and approved.
-                isApprovedTeacher = true;
-
+                // The teacher is signed in and approved.
                 welcome.textContent =
                     "Welcome, " + (profile.name || "Teacher") + "!";
 
                 showMessage(
-                    "Your account is approved. You can now access your Teacher Dashboard."
+                    "Your account is approved. You can now access your Teacher Dashboard.",
+                    "success"
                 );
 
                 teacherContent.hidden = false;
 
             } catch (error) {
-                console.error("Teacher dashboard error:", error);
+
+                console.error("Teacher dashboard verification error:", error);
 
                 showMessage(
-                    "Unable to verify your account. Please sign in again."
+                    "Unable to verify your account. Please try signing in again. If this continues, check your Firestore permissions.",
+                    "error"
                 );
 
                 return;
             }
 
-            // Log out securely.
+            // Logout.
             logoutButton.addEventListener("click", async function () {
 
                 logoutButton.disabled = true;
                 logoutButton.textContent = "Logging out...";
 
                 try {
+
                     await eduReachAuth.signOut();
 
                     window.location.replace("login.html?role=teacher");
 
                 } catch (error) {
-                    console.error("Logout error:", error);
+
+                    console.error("Teacher logout error:", error);
 
                     showMessage(
-                        "Unable to log out. Please try again."
+                        "Unable to log out. Please try again.",
+                        "error"
                     );
 
                     logoutButton.disabled = false;
                     logoutButton.textContent = "Log Out";
                 }
+
             });
 
         });
