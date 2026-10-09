@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
 
     <meta
@@ -12,18 +11,19 @@
 
     <meta
         name="description"
-        content="Sign in to your EduReach learning account."
+        content="Sign in to your EduReach student, teacher or administrator account."
     >
+
+    <meta name="theme-color" content="#6D5DFC">
 
     <title>Sign In | EduReach</title>
 
     <link
         rel="stylesheet"
-        href="style.css?v=6"
+        href="style.css?v=7"
     >
 
     <style>
-
         /* =========================================
            LOGIN BUTTON
         ========================================== */
@@ -63,33 +63,28 @@
             visibility: visible !important;
         }
 
-
         #loginButton:hover {
             background: #5144D9 !important;
         }
 
-
         #loginButton:active {
             transform: translateY(1px);
         }
-
 
         #loginButton:disabled {
             opacity: 0.65 !important;
             cursor: not-allowed !important;
         }
 
-
         /* =========================================
            LOGIN MESSAGE
         ========================================== */
 
         #authMessage {
-            display: block;
+            display: none;
             width: 100%;
             margin-top: 14px;
         }
-
 
         /* =========================================
            PASSWORD TOGGLE
@@ -99,13 +94,70 @@
             cursor: pointer !important;
         }
 
-    </style>
+        /* =========================================
+           ACCOUNT TYPE
+        ========================================== */
 
+        .account-type {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 25px;
+        }
+
+        .account-type-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            border-radius: 14px;
+            background: #EFEDFF;
+            font-size: 24px;
+        }
+
+        .account-type span {
+            display: block;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.4px;
+            color: #7B839A;
+            margin-bottom: 5px;
+        }
+
+        #roleTitle {
+            display: block;
+            color: #17203A;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        /* =========================================
+           ROLE-SPECIFIC INTRODUCTION
+        ========================================== */
+
+        #roleDescription {
+            margin-top: 5px;
+            color: #7B839A;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* =========================================
+           ACCESSIBILITY
+        ========================================== */
+
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible {
+            outline: 3px solid rgba(109, 93, 252, 0.35);
+            outline-offset: 3px;
+        }
+    </style>
 </head>
 
-
 <body>
-
 
     <!-- =========================================
          HEADER
@@ -118,10 +170,10 @@
             <a
                 href="index.html"
                 class="auth-logo"
+                aria-label="EduReach Home"
             >
                 EduReach
             </a>
-
 
             <a
                 href="index.html"
@@ -135,7 +187,6 @@
     </header>
 
 
-
     <!-- =========================================
          MAIN LOGIN PAGE
     ========================================== -->
@@ -144,29 +195,27 @@
 
         <div class="auth-layout">
 
-
             <!-- =================================
                  LEFT SIDE
             ================================== -->
 
             <section class="auth-intro">
 
-
                 <div class="auth-badge">
                     🔐 Secure Sign In
                 </div>
 
-
-                <h1>
+                <h1 id="introHeading">
                     Welcome back.
                 </h1>
 
-
-                <p class="auth-intro-text">
+                <p
+                    class="auth-intro-text"
+                    id="introDescription"
+                >
                     Sign in to continue your EduReach
                     learning journey.
                 </p>
-
 
 
                 <!-- Feature 1 -->
@@ -179,11 +228,11 @@
 
                     <div>
 
-                        <h3>
+                        <h3 id="featureOneTitle">
                             Continue learning
                         </h3>
 
-                        <p>
+                        <p id="featureOneDescription">
                             Pick up your courses and lessons
                             where you left off.
                         </p>
@@ -191,7 +240,6 @@
                     </div>
 
                 </div>
-
 
 
                 <!-- Feature 2 -->
@@ -204,11 +252,11 @@
 
                     <div>
 
-                        <h3>
+                        <h3 id="featureTwoTitle">
                             Track your progress
                         </h3>
 
-                        <p>
+                        <p id="featureTwoDescription">
                             Keep your XP, achievements
                             and learning streak.
                         </p>
@@ -216,7 +264,6 @@
                     </div>
 
                 </div>
-
 
 
                 <!-- Feature 3 -->
@@ -242,9 +289,7 @@
 
                 </div>
 
-
             </section>
-
 
 
             <!-- =================================
@@ -253,12 +298,15 @@
 
             <section class="auth-card">
 
-
                 <!-- Account type -->
 
                 <div class="account-type">
 
-                    <div class="account-type-icon">
+                    <div
+                        class="account-type-icon"
+                        id="accountTypeIcon"
+                        aria-hidden="true"
+                    >
                         🎓
                     </div>
 
@@ -272,10 +320,13 @@
                             Student
                         </strong>
 
+                        <p id="roleDescription">
+                            Access your courses and learning progress.
+                        </p>
+
                     </div>
 
                 </div>
-
 
 
                 <!-- =================================
@@ -286,7 +337,6 @@
                     id="loginForm"
                     novalidate
                 >
-
 
                     <!-- Email -->
 
@@ -301,12 +351,11 @@
                             id="email"
                             name="email"
                             placeholder="Enter your email address"
-                            autocomplete="email"
+                            autocomplete="username"
                             required
                         >
 
                     </div>
-
 
 
                     <!-- Password -->
@@ -316,7 +365,6 @@
                         <label for="password">
                             Password
                         </label>
-
 
                         <div class="password-field">
 
@@ -329,12 +377,12 @@
                                 required
                             >
 
-
                             <button
                                 type="button"
                                 id="passwordToggle"
                                 class="password-toggle"
                                 aria-label="Show password"
+                                aria-pressed="false"
                             >
                                 👁
                             </button>
@@ -342,7 +390,6 @@
                         </div>
 
                     </div>
-
 
 
                     <!-- Remember + Forgot -->
@@ -363,7 +410,6 @@
 
                         </label>
 
-
                         <a
                             href="#"
                             id="forgotPassword"
@@ -372,7 +418,6 @@
                         </a>
 
                     </div>
-
 
 
                     <!-- Firebase message -->
@@ -385,10 +430,7 @@
                     ></div>
 
 
-
-                    <!-- =================================
-                         SIGN IN BUTTON
-                    ================================== -->
+                    <!-- Sign in button -->
 
                     <button
                         type="submit"
@@ -396,7 +438,6 @@
                     >
                         Sign In
                     </button>
-
 
 
                     <!-- Student registration -->
@@ -417,7 +458,6 @@
                     </div>
 
 
-
                     <!-- Security -->
 
                     <div class="security-note">
@@ -427,11 +467,11 @@
                         </span>
 
                         <span>
-                            Your password is securely managed by Firebase Authentication.
+                            Your password is securely managed by
+                            Firebase Authentication.
                         </span>
 
                     </div>
-
 
                 </form>
 
@@ -442,9 +482,8 @@
     </main>
 
 
-
     <!-- =========================================
-         FIREBASE
+         FIREBASE SDK
     ========================================== -->
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -455,9 +494,255 @@
 
     <script src="firebase.js"></script>
 
-    <script src="login.js?v=4"></script>
 
+    <!-- =========================================
+         ROLE SELECTION AND LOGIN LOGIC
+    ========================================== -->
+
+    <script>
+        (function () {
+            "use strict";
+
+            const params = new URLSearchParams(
+                window.location.search
+            );
+
+            const requestedRole = (
+                params.get("role") || "student"
+            ).toLowerCase();
+
+            const validRoles = [
+                "student",
+                "teacher",
+                "admin"
+            ];
+
+            const selectedRole = validRoles.includes(requestedRole)
+                ? requestedRole
+                : "student";
+
+            const roleSettings = {
+                student: {
+                    title: "Student",
+                    icon: "🎓",
+                    description: "Access your courses and learning progress.",
+                    heading: "Welcome back.",
+                    introduction: "Sign in to continue your EduReach learning journey.",
+                    featureOneTitle: "Continue learning",
+                    featureOneDescription: "Pick up your courses and lessons where you left off.",
+                    featureTwoTitle: "Track your progress",
+                    featureTwoDescription: "Keep your XP, achievements and learning streak."
+                },
+
+                teacher: {
+                    title: "Teacher",
+                    icon: "👨‍🏫",
+                    description: "Access your teaching workspace.",
+                    heading: "Welcome, educator.",
+                    introduction: "Sign in to manage your teaching activities on EduReach.",
+                    featureOneTitle: "Manage your courses",
+                    featureOneDescription: "Organize learning content and prepare lessons for your students.",
+                    featureTwoTitle: "Support your students",
+                    featureTwoDescription: "Help learners grow through engaging STEM education."
+                },
+
+                admin: {
+                    title: "Administrator",
+                    icon: "⚙️",
+                    description: "Access the EduReach administration portal.",
+                    heading: "Welcome, administrator.",
+                    introduction: "Sign in to manage the EduReach learning platform.",
+                    featureOneTitle: "Manage the platform",
+                    featureOneDescription: "Access administration tools for the EduReach platform.",
+                    featureTwoTitle: "Oversee learning",
+                    featureTwoDescription: "Support the organization of students, teachers and courses."
+                }
+            };
+
+            const settings = roleSettings[selectedRole];
+
+            document.title = settings.title + " Login | EduReach";
+
+            document.getElementById("roleTitle").textContent =
+                settings.title;
+
+            document.getElementById("accountTypeIcon").textContent =
+                settings.icon;
+
+            document.getElementById("roleDescription").textContent =
+                settings.description;
+
+            document.getElementById("introHeading").textContent =
+                settings.heading;
+
+            document.getElementById("introDescription").textContent =
+                settings.introduction;
+
+            document.getElementById("featureOneTitle").textContent =
+                settings.featureOneTitle;
+
+            document.getElementById("featureOneDescription").textContent =
+                settings.featureOneDescription;
+
+            document.getElementById("featureTwoTitle").textContent =
+                settings.featureTwoTitle;
+
+            document.getElementById("featureTwoDescription").textContent =
+                settings.featureTwoDescription;
+
+            // Student registration is only shown to students.
+            document.getElementById("studentRegisterPrompt").style.display =
+                selectedRole === "student" ? "" : "none";
+
+            console.log(
+                "EduReach: Selected login role:",
+                selectedRole
+            );
+        })();
+    </script>
+
+    <!-- Existing authentication logic -->
+    <script src="login.js?v=5"></script>
+
+    <!-- =========================================
+         PASSWORD VISIBILITY AND PASSWORD RESET
+    ========================================== -->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const passwordInput =
+                document.getElementById("password");
+
+            const passwordToggle =
+                document.getElementById("passwordToggle");
+
+            const forgotPassword =
+                document.getElementById("forgotPassword");
+
+            const emailInput =
+                document.getElementById("email");
+
+            const authMessage =
+                document.getElementById("authMessage");
+
+            // Show or hide the password.
+            if (passwordInput && passwordToggle) {
+
+                passwordToggle.addEventListener("click", function () {
+
+                    const isPassword =
+                        passwordInput.type === "password";
+
+                    passwordInput.type =
+                        isPassword ? "text" : "password";
+
+                    passwordToggle.textContent =
+                        isPassword ? "🙈" : "👁";
+
+                    passwordToggle.setAttribute(
+                        "aria-label",
+                        isPassword ? "Hide password" : "Show password"
+                    );
+
+                    passwordToggle.setAttribute(
+                        "aria-pressed",
+                        String(isPassword)
+                    );
+                });
+            }
+
+            // Password reset through Firebase Authentication.
+            if (forgotPassword) {
+
+                forgotPassword.addEventListener("click", async function (event) {
+
+                    event.preventDefault();
+
+                    const email = emailInput
+                        ? emailInput.value.trim()
+                        : "";
+
+                    if (!email) {
+
+                        if (authMessage) {
+                            authMessage.textContent =
+                                "Enter your email address first, then select Forgot password.";
+
+                            authMessage.className =
+                                "auth-message error";
+
+                            authMessage.style.display = "block";
+                        }
+
+                        if (emailInput) {
+                            emailInput.focus();
+                        }
+
+                        return;
+                    }
+
+                    if (
+                        typeof firebase === "undefined" ||
+                        !window.eduReachAuth
+                    ) {
+                        if (authMessage) {
+                            authMessage.textContent =
+                                "Firebase is not available. Please refresh the page and try again.";
+
+                            authMessage.className =
+                                "auth-message error";
+
+                            authMessage.style.display = "block";
+                        }
+
+                        return;
+                    }
+
+                    try {
+
+                        await window.eduReachAuth
+                            .sendPasswordResetEmail(email);
+
+                        if (authMessage) {
+                            authMessage.textContent =
+                                "If an account exists for this email, a password reset email will be sent. Check your inbox.";
+
+                            authMessage.className =
+                                "auth-message success";
+
+                            authMessage.style.display = "block";
+                        }
+
+                    } catch (error) {
+
+                        console.error(
+                            "Password reset error:",
+                            error
+                        );
+
+                        let message =
+                            "Unable to send the password reset email. Please try again.";
+
+                        if (error.code === "auth/invalid-email") {
+                            message =
+                                "Please enter a valid email address.";
+                        } else if (error.code === "auth/too-many-requests") {
+                            message =
+                                "Too many attempts. Please wait and try again.";
+                        }
+
+                        if (authMessage) {
+                            authMessage.textContent = message;
+                            authMessage.className = "auth-message error";
+                            authMessage.style.display = "block";
+                        }
+                    }
+                });
+            }
+
+        });
+    </script>
 
 </body>
-
 </html>
