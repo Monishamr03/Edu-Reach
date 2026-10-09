@@ -11,3 +11,35 @@ const firebaseConfig = {
     messagingSenderId: "80487566189",
     appId: "1:80487566189:web:d6e1f3d8c4d35fb032e864"
 };
+
+
+/* =========================================
+   INITIALIZE FIREBASE
+========================================= */
+
+if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+}
+
+
+/* =========================================
+   AUTHENTICATION
+========================================= */
+
+window.eduReachAuth = firebase.auth();
+
+
+/* =========================================
+   FIRESTORE DATABASE
+========================================= */
+
+window.eduReachDB = firebase.firestore();
+
+
+/* =========================================
+   CONFIRM INITIALIZATION
+========================================= */
+
+console.log("EduReach: Firebase initialized.");
+console.log("EduReach: Authentication ready.");
+console.log("EduReach: Firestore ready.");
