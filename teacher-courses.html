@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Courses | EduReach</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #1e293b;
+        }
+
+        header {
+            background: #10234f;
+            color: white;
+            padding: 20px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .intro {
+            margin-bottom: 25px;
+        }
+
+        .intro h2 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .intro p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .panel {
+            background: white;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+            margin-bottom: 30px;
+        }
+
+        .panel h3 {
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin: 17px 0 7px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font: inherit;
+            background: white;
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: 2px solid #93c5fd;
+            border-color: #2563eb;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .primary {
+            background: #2563eb;
+            color: white;
+            margin-top: 20px;
+        }
+
+        .primary:hover {
+            background: #1d4ed8;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #message {
+            margin-top: 15px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .course-card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            border-top: 4px solid #2563eb;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+            overflow-wrap: anywhere;
+        }
+
+        .course-card h4 {
+            font-size: 20px;
+            margin: 0 0 12px;
+        }
+
+        .subject {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1d4ed8;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .description {
+            color: #64748b;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .empty {
+            color: #64748b;
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            line-height: 1.6;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 18px;
+            }
+
+            main {
+                margin-top: 22px;
+                padding: 0 14px;
+            }
+
+            .panel {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>EduReach | Teacher Portal</h1>
+
+    <nav>
+        <a href="teacher-dashboard.html">Dashboard</a>
+        <a href="index.html">Home</a>
+    </nav>
+</header>
+
+<main>
+    <section class="intro">
+        <h2>My Courses</h2>
+        <p>
+            Create and manage STEM courses for your students.
+            Your courses are saved in Firebase.
+        </p>
+    </section>
+
+    <section id="pageMessage" class="panel" aria-live="polite">
+        Checking your login...
+    </section>
+
+    <div id="teacherContent" class="hidden">
+
+        <section class="panel">
+            <h3>Create a New Course</h3>
+
+            <form id="courseForm">
+
+                <label for="courseTitle">Course Title</label>
+                <input
+                    id="courseTitle"
+                    type="text"
+                    maxlength="100"
+                    placeholder="Example: Introduction to Physics"
+                    required
+                >
+
+                <label for="courseSubject">Subject</label>
+                <select id="courseSubject" required>
+                    <option value="">Select a subject</option>
+                    <option value="Physics">Physics</option>
+                    <option value="Chemistry">Chemistry</option>
+                    <option value="Mathematics">Mathematics</option>
+                    <option value="Biology">Biology</option>
+                    <option value="Computer Science">Computer Science</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <label for="courseDescription">Course Description</label>
+                <textarea
+                    id="courseDescription"
+                    maxlength="1000"
+                    placeholder="Explain what students will learn in this course."
+                    required
+                ></textarea>
+
+                <button
+                    type="submit"
+                    id="saveButton"
+                    class="primary"
+                >
+                    Save Course
+                </button>
+
+                <p id="message" role="status" aria-live="polite"></p>
+            </form>
+        </section>
+
+        <section>
+            <h3>My Saved Courses</h3>
+
+            <div id="courseList" class="course-grid">
+                <p>Loading courses...</p>
+            </div>
+        </section>
+
+    </div>
+</main>
+
+<footer>
+    EduReach — Learn Beyond Limits
+</footer>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<!-- Your existing Firebase configuration -->
+<script src="firebase.js"></script>
+
+<script>
+    const pageMessage = document.getElementById("pageMessage");
+    const teacherContent = document.getElementById("teacherContent");
+    const courseForm = document.getElementById("courseForm");
+    const saveButton = document.getElementById("saveButton");
+    const message = document.getElementById("message");
+    const courseList = document.getElementById("courseList");
+
+    let currentTeacher = null;
+    let unsubscribeCourses = null;
+    let authCheckStarted = false;
+
+    function showPageMessage(text) {
+        pageMessage.textContent = text;
+        pageMessage.classList.remove("hidden");
+        teacherContent.classList.add("hidden");
+    }
+
+    function showMessage(text, error = false) {
+        message.textContent = text;
+        message.style.color = error ? "#b91c1c" : "#15803d";
+    }
+
+    function stopCourseListener() {
+        if (unsubscribeCourses) {
+            unsubscribeCourses();
+            unsubscribeCourses = null;
+        }
+    }
+
+    function renderCourses(snapshot) {
+        courseList.replaceChildren();
+
+        if (snapshot.empty) {
+            const empty = document.createElement("div");
+            empty.className = "empty";
+            empty.textContent =
+                "You have not created any courses yet. Create your first course above.";
+            courseList.appendChild(empty);
+            return;
+        }
+
+        snapshot.forEach(function (doc) {
+            const course = doc.data();
+
+            const card = document.createElement("article");
+            card.className = "course-card";
+
+            const title = document.createElement("h4");
+            title.textContent = course.title || "Untitled Course";
+
+            const subject = document.createElement("span");
+            subject.className = "subject";
+            subject.textContent = course.subject || "Other";
+
+            const description = document.createElement("p");
+            description.className = "description";
+            description.textContent =
+                course.description || "No description available.";
+
+            card.appendChild(title);
+            card.appendChild(subject);
+            card.appendChild(description);
+
+            courseList.appendChild(card);
+        });
+    }
+
+    function loadCourses() {
+        stopCourseListener();
+
+        courseList.textContent = "Loading courses...";
+
+        unsubscribeCourses = eduReachDB
+            .collection("courses")
+            .where("teacherId", "==", currentTeacher.uid)
+            .onSnapshot(
+                function (snapshot) {
+                    renderCourses(snapshot);
+                },
+                function (error) {
+                    console.error("Loading courses failed:", error);
+
+                    courseList.textContent =
+                        "Could not load courses. Please check your internet connection and Firestore rules.";
+                }
+            );
+    }
+
+    courseForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        if (!currentTeacher) {
+            showMessage("Please sign in again.", true);
+            return;
+        }
+
+        const title = document.getElementById("courseTitle").value.trim();
+        const subject = document.getElementById("courseSubject").value;
+        const description =
+            document.getElementById("courseDescription").value.trim();
+
+        if (
+            !title ||
+            title.length > 100 ||
+            !subject ||
+            !description ||
+            description.length > 1000
+        ) {
+            showMessage(
+                "Please enter a valid title, subject, and description.",
+                true
+            );
+            return;
+        }
+
+        saveButton.disabled = true;
+        showMessage("Saving course...", false);
+
+        try {
+            await eduReachDB.collection("courses").add({
+                title: title,
+                subject: subject,
+                description: description,
+                teacherId: currentTeacher.uid,
+                teacherName: currentTeacher.name || currentTeacher.email || "",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            courseForm.reset();
+            showMessage("Course saved successfully!", false);
+
+        } catch (error) {
+            console.error("Saving course failed:", error);
+
+            if (error.code === "permission-denied") {
+                showMessage(
+                    "Firebase denied this action. Check that your teacher account is approved and the Firestore rules are published.",
+                    true
+                );
+            } else {
+                showMessage(
+                    "Could not save the course. Please check your connection and try again.",
+                    true
+                );
+            }
+        } finally {
+            saveButton.disabled = false;
+        }
+    });
+
+    if (
+        typeof firebase === "undefined" ||
+        typeof eduReachAuth === "undefined" ||
+        typeof eduReachDB === "undefined"
+    ) {
+        showPageMessage(
+            "Firebase did not load. Please check firebase.js and the Firebase SDK scripts."
+        );
+    } else {
+        eduReachAuth.onAuthStateChanged(async function (user) {
+            if (authCheckStarted) {
+                return;
+            }
+
+            authCheckStarted = true;
+
+            if (!user) {
+                showPageMessage(
+                    "You are not signed in. Redirecting to teacher login..."
+                );
+
+                setTimeout(function () {
+                    window.location.href = "login.html?role=teacher";
+                }, 1500);
+
+                return;
+            }
+
+            try {
+                const profileDoc = await eduReachDB
+                    .collection("users")
+                    .doc(user.uid)
+                    .get();
+
+                if (!profileDoc.exists) {
+                    await eduReachAuth.signOut();
+
+                    showPageMessage(
+                        "Your user profile was not found. Please sign in again."
+                    );
+
+                    return;
+                }
+
+                const profile = profileDoc.data();
+
+                if (
+                    profile.role !== "teacher" ||
+                    profile.status !== "approved" ||
+                    profile.approvalStatus !== "approved"
+                ) {
+                    await eduReachAuth.signOut();
+
+                    showPageMessage(
+                        "Only approved teacher accounts can access this page."
+                    );
+
+                    return;
+                }
+
+                currentTeacher = {
+                    uid: user.uid,
+                    name: profile.name || "",
+                    email: user.email || ""
+                };
+
+                pageMessage.classList.add("hidden");
+                teacherContent.classList.remove("hidden");
+
+                loadCourses();
+
+            } catch (error) {
+                console.error("Teacher verification failed:", error);
+
+                showPageMessage(
+                    "Unable to verify your account. Please check your internet connection and try again."
+                );
+            }
+        });
+    }
+
+    window.addEventListener("beforeunload", stopCourseListener);
+</script>
+
+</body>
+</html>
