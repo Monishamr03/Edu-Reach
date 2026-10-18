@@ -1,1 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Lessons | EduReach</title>
 
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f6fc;
+            color: #172b4d;
+        }
+
+        header {
+            background: #102a66;
+            color: white;
+            padding: 22px 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 26px;
+        }
+
+        header p {
+            margin: 7px 0 0;
+            color: #dce6ff;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button,
+        .button {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 18px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .primary {
+            background: #2864f0;
+            color: white;
+        }
+
+        .secondary {
+            background: white;
+            color: #102a66;
+        }
+
+        main {
+            max-width: 1050px;
+            margin: 30px auto;
+            padding: 0 18px;
+        }
+
+        .intro {
+            margin-bottom: 25px;
+        }
+
+        .intro h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .intro p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .card {
+            background: white;
+            padding: 26px;
+            border-radius: 15px;
+            margin-bottom: 28px;
+            box-shadow: 0 5px 20px rgba(20, 40, 80, 0.07);
+        }
+
+        .card h2 {
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin: 18px 0 8px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+            background: white;
+        }
+
+        textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .help {
+            color: #64748b;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-top: 7px;
+        }
+
+        .notice {
+            padding: 13px;
+            border-radius: 8px;
+            margin: 15px 0;
+            display: none;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .info {
+            display: block;
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .progress-track {
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 15px 0;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #2864f0;
+            transition: width 0.2s;
+        }
+
+        .lesson {
+            border: 1px solid #e2e8f0;
+            border-left: 5px solid #2864f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 16px;
+        }
+
+        .lesson h3 {
+            margin: 0 0 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #dbeafe;
+            color: #1d4ed8;
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .lesson video {
+            display: block;
+            width: 100%;
+            max-height: 360px;
+            margin-top: 15px;
+            background: #111827;
+            border-radius: 8px;
+        }
+
+        .lesson a {
+            color: #2457d6;
+            overflow-wrap: anywhere;
+        }
+
+        .empty {
+            color: #64748b;
+            padding: 15px 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 20px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .intro h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div>
+            <h1>EduReach</h1>
+            <p>Teacher Learning Content Manager</p>
+        </div>
+
+        <div class="header-actions">
+            <a class="button secondary" href="teacher-dashboard.html">
+                Dashboard
+            </a>
+
+            <button class="secondary" id="logoutButton" type="button">
+                Logout
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <section class="intro">
+            <h2>Manage Your Lessons 📚</h2>
+            <p>
+                Upload educational videos and supporting PDF notes for your
+                students. Lesson details will be stored in Firebase.
+            </p>
+        </section>
+
+        <div id="pageMessage" class="notice" role="status"></div>
+
+        <section class="card">
+            <h2>Upload a New Lesson</h2>
+
+            <form id="lessonForm">
+                <label for="courseSelect">Select Course *</label>
+                <select id="courseSelect" required>
+                    <option value="">Loading your courses...</option>
+                </select>
+
+                <p class="help">
+                    Only courses owned by your teacher account will be listed.
+                </p>
+
+                <label for="lessonTitle">Lesson Title *</label>
+                <input
+                    type="text"
+                    id="lessonTitle"
+                    maxlength="150"
+                    placeholder="Example: Introduction to Motion"
+                    required
+                >
+
+                <label for="lessonDescription">Lesson Description *</label>
+                <textarea
+                    id="lessonDescription"
+                    maxlength="3000"
+                    placeholder="Explain what students will learn..."
+                    required
+                ></textarea>
+
+                <label for="videoFile">Video Lesson (MP4) *</label>
+                <input
+                    type="file"
+                    id="videoFile"
+                    accept="video/mp4,video/webm,video/quicktime"
+                    required
+                >
+
+                <p class="help">
+                    Choose a video file that your students can study.
+                    Keep it as small as practical for students with limited
+                    internet connectivity.
+                </p>
+
+                <label for="pdfFile">Supporting PDF Notes (Optional)</label>
+                <input
+                    type="file"
+                    id="pdfFile"
+                    accept=".pdf,application/pdf"
+                >
+
+                <p class="help">
+                    The video and PDF are uploaded to Firebase Storage.
+                    Their links and lesson details are saved in Firestore.
+                </p>
+
+                <div
+                    id="uploadProgress"
+                    class="progress-track"
+                    aria-label="Upload progress"
+                >
+                    <div id="progressFill" class="progress-fill"></div>
+                </div>
+
+                <p id="progressText" class="help"></p>
+
+                <button
+                    class="primary"
+                    type="submit"
+                    id="saveLessonButton"
+                >
+                    Upload and Save Lesson
+                </button>
+            </form>
+        </section>
+
+        <section class="card">
+            <h2>My Uploaded Lessons</h2>
+
+            <p class="help">
+                Lessons uploaded using this page will appear here.
+            </p>
+
+            <div id="lessonsList">
+                <p class="empty">Loading lessons...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        EduReach — Learn Beyond Limits
+    </footer>
+
+    <!-- Firebase SDK: compat version for the existing firebase.js file -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+
+    <script src="firebase.js"></script>
+
+    <script>
+        const courseSelect = document.getElementById("courseSelect");
+        const lessonForm = document.getElementById("lessonForm");
+        const saveLessonButton = document.getElementById("saveLessonButton");
+        const lessonsList = document.getElementById("lessonsList");
+        const pageMessage = document.getElementById("pageMessage");
+        const uploadProgress = document.getElementById("uploadProgress");
+        const progressFill = document.getElementById("progressFill");
+        const progressText = document.getElementById("progressText");
+
+        let currentTeacher = null;
+        let teacherProfile = null;
+        let isPageReady = false;
+
+        function showMessage(message, type) {
+            pageMessage.textContent = message;
+            pageMessage.className = "notice " + type;
+        }
+
+        function clearMessage() {
+            pageMessage.textContent = "";
+            pageMessage.className = "notice";
+        }
+
+        function safeText(value) {
+            return String(value == null ? "" : value);
+        }
+
+        function makeElement(tag, className, text) {
+            const element = document.createElement(tag);
+
+            if (className) {
+                element.className = className;
+            }
+
+            if (text !== undefined) {
+                element.textContent = text;
+            }
+
+            return element;
+        }
+
+        function formatBytes(bytes) {
+            if (!Number.isFinite(bytes) || bytes < 0) {
+                return "";
+            }
+
+            if (bytes < 1024 * 1024) {
+                return (bytes / 1024).toFixed(0) + " KB";
+            }
+
+            return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+        }
+
+        function validateFile(file, allowedTypes, maxBytes) {
+            if (!file) {
+                return "Please select a file.";
+            }
+
+            const validType = allowedTypes.includes(file.type);
+
+            if (!validType) {
+                return "Please choose a supported file type.";
+            }
+
+            if (file.size > maxBytes) {
+                return "The selected file is too large. Maximum size: "
+                    + formatBytes(maxBytes) + ".";
+            }
+
+            if (file.size === 0) {
+                return "The selected file is empty.";
+            }
+
+            return "";
+        }
+
+        async function waitForAuth() {
+            return new Promise(function (resolve, reject) {
+                let unsubscribe = null;
+
+                unsubscribe = eduReachAuth.onAuthStateChanged(
+                    function (user) {
+                        if (unsubscribe) {
+                            unsubscribe();
+                        }
+
+                        resolve(user);
+                    },
+                    function (error) {
+                        if (unsubscribe) {
+                            unsubscribe();
+                        }
+
+                        reject(error);
+                    }
+                );
+            });
+        }
+
+        async function initializePage() {
+            try {
+                if (!window.eduReachAuth || !window.eduReachDB) {
+                    throw new Error(
+                        "Firebase did not initialize. Check firebase.js."
+                    );
+                }
+
+                if (!window.firebase || !firebase.storage) {
+                    throw new Error(
+                        "Firebase Storage SDK failed to load."
+                    );
+                }
+
+                currentTeacher = await waitForAuth();
+
+                if (!currentTeacher) {
+                    window.location.href = "login.html?role=teacher";
+                    return;
+                }
+
+                const profileSnapshot = await eduReachDB
+                    .collection("users")
+                    .doc(currentTeacher.uid)
+                    .get();
+
+                if (!profileSnapshot.exists) {
+                    throw new Error(
+                        "Your user profile was not found in Firestore."
+                    );
+                }
+
+                teacherProfile = profileSnapshot.data();
+
+                if (
+                    teacherProfile.role !== "teacher" ||
+                    teacherProfile.status !== "approved" ||
+                    teacherProfile.approvalStatus !== "approved"
+                ) {
+                    await eduReachAuth.signOut();
+
+                    showMessage(
+                        "Only approved teachers can manage lessons.",
+                        "error"
+                    );
+
+                    setTimeout(function () {
+                        window.location.href = "login.html?role=teacher";
+                    }, 1500);
+
+                    return;
+                }
+
+                isPageReady = true;
+
+                await loadCourses();
+                await loadLessons();
+
+            } catch (error) {
+                console.error("EduReach lesson page initialization:", error);
+
+                showMessage(
+                    error.message || "Could not load the teacher page.",
+                    "error"
+                );
+
+                courseSelect.innerHTML =
+                    '<option value="">Could not load courses</option>';
+
+                lessonsList.replaceChildren(
+                    makeElement(
+                        "p",
+                        "empty",
+                        "Unable to load lessons. Check the error message above."
+                    )
+                );
+            }
+        }
+
+        async function loadCourses() {
+            courseSelect.innerHTML =
+                '<option value="">Loading courses...</option>';
+
+            /*
+             * The existing course page must save courses with a teacher
+             * ownership field. We check common field names below.
+             */
+            const snapshot = await eduReachDB
+                .collection("courses")
+                .get();
+
+            courseSelect.replaceChildren();
+
+            const placeholder = makeElement(
+                "option",
+                "",
+                "Select a course"
+            );
+
+            placeholder.value = "";
+            courseSelect.appendChild(placeholder);
+
+            let count = 0;
+
+            snapshot.forEach(function (documentSnapshot) {
+                const course = documentSnapshot.data();
+
+                const ownerId =
+                    course.teacherId ||
+                    course.createdBy ||
+                    course.ownerId ||
+                    course.teacherUid ||
+                    "";
+
+                if (ownerId !== currentTeacher.uid) {
+                    return;
+                }
+
+                const option = document.createElement("option");
+
+                option.value = documentSnapshot.id;
+                option.textContent =
+                    safeText(course.title || course.name || "Untitled course");
+
+                courseSelect.appendChild(option);
+                count++;
+            });
+
+            if (count === 0) {
+                showMessage(
+                    "No courses linked to your teacher account were found. "
+                    + "Your existing course page may be saving a different "
+                    + "ownership field or collection name. We should connect "
+                    + "the two pages before uploading lessons.",
+                    "info"
+                );
+            }
+        }
+
+        function uploadFile(file, storagePath, onProgress) {
+            return new Promise(function (resolve, reject) {
+                const storageRef = firebase.storage().ref(storagePath);
+                const uploadTask = storageRef.put(file);
+
+                uploadTask.on(
+                    "state_changed",
+                    function (snapshot) {
+                        const percent = snapshot.totalBytes
+                            ? Math.round(
+                                (snapshot.bytesTransferred /
+                                snapshot.totalBytes) * 100
+                            )
+                            : 0;
+
+                        onProgress(percent);
+                    },
+                    reject,
+                    async function () {
+                        try {
+                            const url = await uploadTask.snapshot.ref
+                                .getDownloadURL();
+
+                            resolve({
+                                url: url,
+                                path: storagePath
+                            });
+                        } catch (error) {
+                            reject(error);
+                        }
+                    }
+                );
+            });
+        }
+
+        async function loadLessons() {
+            lessonsList.replaceChildren(
+                makeElement("p", "empty", "Loading lessons...")
+            );
+
+            const snapshot = await eduReachDB
+                .collection("lessons")
+                .where("teacherId", "==", currentTeacher.uid)
+                .get();
+
+            lessonsList.replaceChildren();
+
+            if (snapshot.empty) {
+                lessonsList.appendChild(
+                    makeElement(
+                        "p",
+                        "empty",
+                        "No lessons uploaded yet. Create your first lesson above."
+                    )
+                );
+
+                return;
+            }
+
+            const lessons = [];
+
+            snapshot.forEach(function (documentSnapshot) {
+                lessons.push({
+                    id: documentSnapshot.id,
+                    ...documentSnapshot.data()
+                });
+            });
+
+            lessons.sort(function (a, b) {
+                const dateA = a.createdAt && a.createdAt.toMillis
+                    ? a.createdAt.toMillis()
+                    : 0;
+
+                const dateB = b.createdAt && b.createdAt.toMillis
+                    ? b.createdAt.toMillis()
+                    : 0;
+
+                return dateB - dateA;
+            });
+
+            lessons.forEach(function (lesson) {
+                const card = makeElement("article", "lesson");
+
+                card.appendChild(
+                    makeElement("h3", "", safeText(lesson.title))
+                );
+
+                card.appendChild(
+                    makeElement(
+                        "span",
+                        "badge",
+                        safeText(lesson.status || "draft")
+                    )
+                );
+
+                card.appendChild(
+                    makeElement(
+                        "p",
+                        "",
+                        safeText(lesson.description)
+                    )
+                );
+
+                if (lesson.videoUrl) {
+                    const video = document.createElement("video");
+
+                    video.controls = true;
+                    video.preload = "metadata";
+                    video.src = lesson.videoUrl;
+
+                    card.appendChild(video);
+                }
+
+                if (lesson.pdfUrl) {
+                    const paragraph = document.createElement("p");
+                    const link = document.createElement("a");
+
+                    link.href = lesson.pdfUrl;
+                    link.target = "_blank";
+                    link.rel = "noopener noreferrer";
+                    link.textContent = "Open PDF notes";
+
+                    paragraph.appendChild(link);
+                    card.appendChild(paragraph);
+                }
+
+                lessonsList.appendChild(card);
+            });
+        }
+
+        lessonForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+            clearMessage();
+
+            if (!isPageReady || !currentTeacher) {
+                showMessage(
+                    "The teacher account is not ready. Reload the page.",
+                    "error"
+                );
+                return;
+            }
+
+            const courseId = courseSelect.value;
+            const title = document.getElementById("lessonTitle")
+                .value.trim();
+            const description = document.getElementById("lessonDescription")
+                .value.trim();
+            const videoFile = document.getElementById("videoFile")
+                .files[0];
+            const pdfFile = document.getElementById("pdfFile")
+                .files[0];
+
+            if (!courseId || !title || !description || !videoFile) {
+                showMessage(
+                    "Please select a course and enter the lesson details "
+                    + "and a video file.",
+                    "error"
+                );
+                return;
+            }
+
+            const videoError = validateFile(
+                videoFile,
+                ["video/mp4", "video/webm", "video/quicktime"],
+                200 * 1024 * 1024
+            );
+
+            if (videoError) {
+                showMessage(
+                    videoError + " This page currently allows videos up to 200 MB.",
+                    "error"
+                );
+                return;
+            }
+
+            if (pdfFile) {
+                const pdfError = validateFile(
+                    pdfFile,
+                    ["application/pdf"],
+                    20 * 1024 * 1024
+                );
+
+                if (pdfError) {
+                    showMessage(
+                        pdfError + " PDF limit: 20 MB.",
+                        "error"
+                    );
+                    return;
+                }
+            }
+
+            saveLessonButton.disabled = true;
+            saveLessonButton.textContent = "Uploading...";
+            uploadProgress.style.display = "block";
+            progressFill.style.width = "0%";
+            progressText.textContent = "Preparing upload...";
+
+            let uploadedVideoPath = null;
+            let uploadedPdfPath = null;
+
+            try {
+                /*
+                 * Verify course ownership again before uploading.
+                 */
+                const courseSnapshot = await eduReachDB
+                    .collection("courses")
+                    .doc(courseId)
+                    .get();
+
+                if (!courseSnapshot.exists) {
+                    throw new Error("The selected course no longer exists.");
+                }
+
+                const courseData = courseSnapshot.data();
+
+                const ownerId =
+                    courseData.teacherId ||
+                    courseData.createdBy ||
+                    courseData.ownerId ||
+                    courseData.teacherUid ||
+                    "";
+
+                if (ownerId !== currentTeacher.uid) {
+                    throw new Error(
+                        "You can upload lessons only to your own courses. "
+                        + "The course ownership data needs to be checked."
+                    );
+                }
+
+                const safeVideoName = videoFile.name.replace(
+                    /[^a-zA-Z0-9._-]/g,
+                    "_"
+                );
+
+                const videoPath =
+                    "lesson-videos/" + currentTeacher.uid + "/"
+                    + Date.now() + "_" + safeVideoName;
+
+                progressText.textContent =
+                    "Uploading video: " + formatBytes(videoFile.size);
+
+                const videoResult = await uploadFile(
+                    videoFile,
+                    videoPath,
+                    function (percent) {
+                        progressFill.style.width = percent + "%";
+                        progressText.textContent =
+                            "Uploading video: " + percent + "%";
+                    }
+                );
+
+                uploadedVideoPath = videoResult.path;
+
+                let pdfResult = null;
+
+                if (pdfFile) {
+                    const safePdfName = pdfFile.name.replace(
+                        /[^a-zA-Z0-9._-]/g,
+                        "_"
+                    );
+
+                    const pdfPath =
+                        "lesson-pdfs/" + currentTeacher.uid + "/"
+                        + Date.now() + "_" + safePdfName;
+
+                    progressText.textContent = "Uploading PDF notes...";
+
+                    pdfResult = await uploadFile(
+                        pdfFile,
+                        pdfPath,
+                        function (percent) {
+                            progressFill.style.width = percent + "%";
+                            progressText.textContent =
+                                "Uploading PDF: " + percent + "%";
+                        }
+                    );
+
+                    uploadedPdfPath = pdfResult.path;
+                }
+
+                progressText.textContent = "Saving lesson details...";
+
+                const lessonData = {
+                    courseId: courseId,
+                    courseTitle: safeText(
+                        courseData.title || courseData.name || ""
+                    ),
+                    teacherId: currentTeacher.uid,
+                    teacherName: safeText(
+                        teacherProfile.name || currentTeacher.email
+                    ),
+                    title: title,
+                    description: description,
+                    videoUrl: videoResult.url,
+                    videoPath: videoResult.path,
+                    videoName: videoFile.name,
+                    videoSize: videoFile.size,
+                    videoType: videoFile.type,
+                    pdfUrl: pdfResult ? pdfResult.url : null,
+                    pdfPath: pdfResult ? pdfResult.path : null,
+                    status: "published",
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                await eduReachDB.collection("lessons").add(lessonData);
+
+                lessonForm.reset();
+
+                progressFill.style.width = "100%";
+                progressText.textContent = "Upload complete!";
+
+                showMessage(
+                    "Lesson uploaded successfully! It is saved in Firebase.",
+                    "success"
+                );
+
+                await loadLessons();
+
+            } catch (error) {
+                console.error("Lesson upload failed:", error);
+
+                /*
+                 * We do not automatically delete uploaded files here,
+                 * because a Firestore write failure must be investigated
+                 * before deciding whether to retry or clean up.
+                 */
+                showMessage(
+                    "Could not save the lesson: "
+                    + (error.message || "Unknown error")
+                    + ". Check Firebase Storage and Firestore rules.",
+                    "error"
+                );
+
+                progressText.textContent =
+                    "Upload did not complete successfully.";
+
+            } finally {
+                saveLessonButton.disabled = false;
+                saveLessonButton.textContent = "Upload and Save Lesson";
+            }
+        });
+
+        document.getElementById("logoutButton")
+            .addEventListener("click", async function () {
+                try {
+                    await eduReachAuth.signOut();
+                    window.location.href = "index.html";
+                } catch (error) {
+                    showMessage(
+                        "Could not log out: " + error.message,
+                        "error"
+                    );
+                }
+            });
+
+        initializePage();
+    </script>
+</body>
+</html>
