@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Teacher Lessons | EduReach</title>
 
     <style>
@@ -176,6 +177,7 @@
             padding: 20px;
             border-radius: 10px;
             margin-top: 16px;
+            overflow-wrap: anywhere;
         }
 
         .lesson h3 {
@@ -210,6 +212,7 @@
         .empty {
             color: #64748b;
             padding: 15px 0;
+            line-height: 1.6;
         }
 
         footer {
@@ -240,6 +243,7 @@
 </head>
 
 <body>
+
     <header>
         <div>
             <h1>EduReach</h1>
@@ -251,7 +255,11 @@
                 Dashboard
             </a>
 
-            <button class="secondary" id="logoutButton" type="button">
+            <button
+                class="secondary"
+                id="logoutButton"
+                type="button"
+            >
                 Logout
             </button>
         </div>
@@ -260,28 +268,37 @@
     <main>
         <section class="intro">
             <h2>Manage Your Lessons 📚</h2>
+
             <p>
                 Upload educational videos and supporting PDF notes for your
-                students. Lesson details will be stored in Firebase.
+                students. Lesson details are stored in Firebase.
             </p>
         </section>
 
-        <div id="pageMessage" class="notice" role="status"></div>
+        <div
+            id="pageMessage"
+            class="notice"
+            role="status"
+            aria-live="polite"
+        ></div>
 
         <section class="card">
             <h2>Upload a New Lesson</h2>
 
             <form id="lessonForm">
+
                 <label for="courseSelect">Select Course *</label>
-                <select id="courseSelect" required>
-                    <option value="">Loading your courses...</option>
+
+                <select id="courseSelect" required disabled>
+                    <option value="">Checking your account...</option>
                 </select>
 
                 <p class="help">
-                    Only courses owned by your teacher account will be listed.
+                    Only courses belonging to your teacher account will appear.
                 </p>
 
                 <label for="lessonTitle">Lesson Title *</label>
+
                 <input
                     type="text"
                     id="lessonTitle"
@@ -291,6 +308,7 @@
                 >
 
                 <label for="lessonDescription">Lesson Description *</label>
+
                 <textarea
                     id="lessonDescription"
                     maxlength="3000"
@@ -299,20 +317,23 @@
                 ></textarea>
 
                 <label for="videoFile">Video Lesson (MP4) *</label>
+
                 <input
                     type="file"
                     id="videoFile"
-                    accept="video/mp4,video/webm,video/quicktime"
+                    accept=".mp4,video/mp4,.webm,video/webm,.mov,video/quicktime"
                     required
                 >
 
                 <p class="help">
-                    Choose a video file that your students can study.
-                    Keep it as small as practical for students with limited
-                    internet connectivity.
+                    Supported formats: MP4, WebM and MOV.
+                    Maximum video size: 200 MB.
                 </p>
 
-                <label for="pdfFile">Supporting PDF Notes (Optional)</label>
+                <label for="pdfFile">
+                    Supporting PDF Notes (Optional)
+                </label>
+
                 <input
                     type="file"
                     id="pdfFile"
@@ -320,16 +341,22 @@
                 >
 
                 <p class="help">
-                    The video and PDF are uploaded to Firebase Storage.
-                    Their links and lesson details are saved in Firestore.
+                    Maximum PDF size: 20 MB.
                 </p>
 
                 <div
                     id="uploadProgress"
                     class="progress-track"
+                    role="progressbar"
                     aria-label="Upload progress"
+                    aria-valuemin="0"
+                    aria-valuemax="100"
+                    aria-valuenow="0"
                 >
-                    <div id="progressFill" class="progress-fill"></div>
+                    <div
+                        id="progressFill"
+                        class="progress-fill"
+                    ></div>
                 </div>
 
                 <p id="progressText" class="help"></p>
@@ -338,9 +365,11 @@
                     class="primary"
                     type="submit"
                     id="saveLessonButton"
+                    disabled
                 >
                     Upload and Save Lesson
                 </button>
+
             </form>
         </section>
 
@@ -352,7 +381,7 @@
             </p>
 
             <div id="lessonsList">
-                <p class="empty">Loading lessons...</p>
+                <p class="empty">Checking your account...</p>
             </div>
         </section>
     </main>
@@ -361,27 +390,48 @@
         EduReach — Learn Beyond Limits
     </footer>
 
-    <!-- Firebase SDK: compat version for the existing firebase.js file -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
 
+    <!-- Existing Firebase configuration -->
     <script src="firebase.js"></script>
 
     <script>
-        const courseSelect = document.getElementById("courseSelect");
-        const lessonForm = document.getElementById("lessonForm");
-        const saveLessonButton = document.getElementById("saveLessonButton");
-        const lessonsList = document.getElementById("lessonsList");
-        const pageMessage = document.getElementById("pageMessage");
-        const uploadProgress = document.getElementById("uploadProgress");
-        const progressFill = document.getElementById("progressFill");
-        const progressText = document.getElementById("progressText");
+        "use strict";
+
+        const courseSelect =
+            document.getElementById("courseSelect");
+
+        const lessonForm =
+            document.getElementById("lessonForm");
+
+        const saveLessonButton =
+            document.getElementById("saveLessonButton");
+
+        const lessonsList =
+            document.getElementById("lessonsList");
+
+        const pageMessage =
+            document.getElementById("pageMessage");
+
+        const uploadProgress =
+            document.getElementById("uploadProgress");
+
+        const progressFill =
+            document.getElementById("progressFill");
+
+        const progressText =
+            document.getElementById("progressText");
 
         let currentTeacher = null;
         let teacherProfile = null;
         let isPageReady = false;
+
+        const MAX_VIDEO_SIZE = 200 * 1024 * 1024;
+        const MAX_PDF_SIZE = 20 * 1024 * 1024;
 
         function showMessage(message, type) {
             pageMessage.textContent = message;
@@ -417,7 +467,7 @@
             }
 
             if (bytes < 1024 * 1024) {
-                return (bytes / 1024).toFixed(0) + " KB";
+                return Math.round(bytes / 1024) + " KB";
             }
 
             return (bytes / (1024 * 1024)).toFixed(1) + " MB";
@@ -428,10 +478,8 @@
                 return "Please select a file.";
             }
 
-            const validType = allowedTypes.includes(file.type);
-
-            if (!validType) {
-                return "Please choose a supported file type.";
+            if (file.size === 0) {
+                return "The selected file is empty.";
             }
 
             if (file.size > maxBytes) {
@@ -439,31 +487,38 @@
                     + formatBytes(maxBytes) + ".";
             }
 
-            if (file.size === 0) {
-                return "The selected file is empty.";
+            if (!allowedTypes.includes(file.type)) {
+                return "Unsupported file type. Please choose a supported file.";
             }
 
             return "";
         }
 
-        async function waitForAuth() {
+        function waitForAuth() {
             return new Promise(function (resolve, reject) {
                 let unsubscribe = null;
+                let finished = false;
+
+                function finish(callback, value) {
+                    if (finished) {
+                        return;
+                    }
+
+                    finished = true;
+
+                    if (unsubscribe) {
+                        unsubscribe();
+                    }
+
+                    callback(value);
+                }
 
                 unsubscribe = eduReachAuth.onAuthStateChanged(
                     function (user) {
-                        if (unsubscribe) {
-                            unsubscribe();
-                        }
-
-                        resolve(user);
+                        finish(resolve, user);
                     },
                     function (error) {
-                        if (unsubscribe) {
-                            unsubscribe();
-                        }
-
-                        reject(error);
+                        finish(reject, error);
                     }
                 );
             });
@@ -471,22 +526,30 @@
 
         async function initializePage() {
             try {
-                if (!window.eduReachAuth || !window.eduReachDB) {
+                if (
+                    !window.firebase ||
+                    !window.eduReachAuth ||
+                    !window.eduReachDB
+                ) {
                     throw new Error(
-                        "Firebase did not initialize. Check firebase.js."
+                        "Firebase did not initialize. Check firebase.js "
+                        + "and the Firebase SDK scripts."
                     );
                 }
 
-                if (!window.firebase || !firebase.storage) {
+                if (!firebase.storage) {
                     throw new Error(
-                        "Firebase Storage SDK failed to load."
+                        "Firebase Storage did not load. "
+                        + "Check the Storage SDK script."
                     );
                 }
 
                 currentTeacher = await waitForAuth();
 
                 if (!currentTeacher) {
-                    window.location.href = "login.html?role=teacher";
+                    window.location.replace(
+                        "login.html?role=teacher"
+                    );
                     return;
                 }
 
@@ -516,27 +579,46 @@
                     );
 
                     setTimeout(function () {
-                        window.location.href = "login.html?role=teacher";
+                        window.location.replace(
+                            "login.html?role=teacher"
+                        );
                     }, 1500);
 
                     return;
                 }
 
-                isPageReady = true;
-
                 await loadCourses();
+
                 await loadLessons();
 
+                isPageReady = true;
+
+                courseSelect.disabled = courseSelect.options.length <= 1;
+
+                saveLessonButton.disabled =
+                    courseSelect.options.length <= 1;
+
             } catch (error) {
-                console.error("EduReach lesson page initialization:", error);
+                console.error(
+                    "EduReach lesson page initialization:",
+                    error
+                );
 
                 showMessage(
-                    error.message || "Could not load the teacher page.",
+                    friendlyError(error),
                     "error"
                 );
 
-                courseSelect.innerHTML =
-                    '<option value="">Could not load courses</option>';
+                courseSelect.replaceChildren();
+
+                const option = document.createElement("option");
+                option.value = "";
+                option.textContent = "Could not load courses";
+
+                courseSelect.appendChild(option);
+                courseSelect.disabled = true;
+
+                saveLessonButton.disabled = true;
 
                 lessonsList.replaceChildren(
                     makeElement(
@@ -548,27 +630,59 @@
             }
         }
 
-        async function loadCourses() {
-            courseSelect.innerHTML =
-                '<option value="">Loading courses...</option>';
+        function friendlyError(error) {
+            const code = error && error.code
+                ? error.code
+                : "";
 
-            /*
-             * The existing course page must save courses with a teacher
-             * ownership field. We check common field names below.
-             */
+            if (
+                code === "permission-denied" ||
+                code === "firestore/permission-denied"
+            ) {
+                return "Firebase denied access. Check your Firestore rules, "
+                    + "teacher approval status, and course ownership.";
+            }
+
+            if (
+                code === "storage/unauthorized"
+            ) {
+                return "Firebase Storage denied the upload. Check your "
+                    + "Firebase Storage rules.";
+            }
+
+            if (
+                code === "storage/canceled"
+            ) {
+                return "The upload was canceled.";
+            }
+
+            return error && error.message
+                ? error.message
+                : "An unexpected error occurred.";
+        }
+
+        // Load only courses belonging to the signed-in teacher.
+        async function loadCourses() {
+            courseSelect.replaceChildren();
+
+            const loadingOption = document.createElement("option");
+            loadingOption.value = "";
+            loadingOption.textContent = "Loading your courses...";
+
+            courseSelect.appendChild(loadingOption);
+            courseSelect.disabled = true;
+
             const snapshot = await eduReachDB
                 .collection("courses")
+                .where("teacherId", "==", currentTeacher.uid)
                 .get();
 
             courseSelect.replaceChildren();
 
-            const placeholder = makeElement(
-                "option",
-                "",
-                "Select a course"
-            );
-
+            const placeholder = document.createElement("option");
             placeholder.value = "";
+            placeholder.textContent = "Select a course";
+
             courseSelect.appendChild(placeholder);
 
             let count = 0;
@@ -576,35 +690,27 @@
             snapshot.forEach(function (documentSnapshot) {
                 const course = documentSnapshot.data();
 
-                const ownerId =
-                    course.teacherId ||
-                    course.createdBy ||
-                    course.ownerId ||
-                    course.teacherUid ||
-                    "";
-
-                if (ownerId !== currentTeacher.uid) {
-                    return;
-                }
-
                 const option = document.createElement("option");
-
                 option.value = documentSnapshot.id;
-                option.textContent =
-                    safeText(course.title || course.name || "Untitled course");
+                option.textContent = safeText(
+                    course.title || "Untitled course"
+                );
 
                 courseSelect.appendChild(option);
                 count++;
             });
 
             if (count === 0) {
+                courseSelect.disabled = true;
+
                 showMessage(
-                    "No courses linked to your teacher account were found. "
-                    + "Your existing course page may be saving a different "
-                    + "ownership field or collection name. We should connect "
-                    + "the two pages before uploading lessons.",
+                    "No courses were found for this teacher account. "
+                    + "Open Teacher Courses and check that your saved "
+                    + "course contains the correct teacherId.",
                     "info"
                 );
+            } else {
+                courseSelect.disabled = false;
             }
         }
 
@@ -615,17 +721,22 @@
 
                 uploadTask.on(
                     "state_changed",
+
                     function (snapshot) {
                         const percent = snapshot.totalBytes
                             ? Math.round(
-                                (snapshot.bytesTransferred /
-                                snapshot.totalBytes) * 100
+                                snapshot.bytesTransferred /
+                                snapshot.totalBytes * 100
                             )
                             : 0;
 
                         onProgress(percent);
                     },
-                    reject,
+
+                    function (error) {
+                        reject(error);
+                    },
+
                     async function () {
                         try {
                             const url = await uploadTask.snapshot.ref
@@ -645,7 +756,11 @@
 
         async function loadLessons() {
             lessonsList.replaceChildren(
-                makeElement("p", "empty", "Loading lessons...")
+                makeElement(
+                    "p",
+                    "empty",
+                    "Loading your lessons..."
+                )
             );
 
             const snapshot = await eduReachDB
@@ -677,11 +792,13 @@
             });
 
             lessons.sort(function (a, b) {
-                const dateA = a.createdAt && a.createdAt.toMillis
+                const dateA = a.createdAt &&
+                    typeof a.createdAt.toMillis === "function"
                     ? a.createdAt.toMillis()
                     : 0;
 
-                const dateB = b.createdAt && b.createdAt.toMillis
+                const dateB = b.createdAt &&
+                    typeof b.createdAt.toMillis === "function"
                     ? b.createdAt.toMillis()
                     : 0;
 
@@ -692,7 +809,11 @@
                 const card = makeElement("article", "lesson");
 
                 card.appendChild(
-                    makeElement("h3", "", safeText(lesson.title))
+                    makeElement(
+                        "h3",
+                        "",
+                        safeText(lesson.title || "Untitled lesson")
+                    )
                 );
 
                 card.appendChild(
@@ -710,6 +831,16 @@
                         safeText(lesson.description)
                     )
                 );
+
+                if (lesson.courseTitle) {
+                    card.appendChild(
+                        makeElement(
+                            "p",
+                            "help",
+                            "Course: " + safeText(lesson.courseTitle)
+                        )
+                    );
+                }
 
                 if (lesson.videoUrl) {
                     const video = document.createElement("video");
@@ -738,232 +869,298 @@
             });
         }
 
-        lessonForm.addEventListener("submit", async function (event) {
-            event.preventDefault();
-            clearMessage();
+        lessonForm.addEventListener(
+            "submit",
+            async function (event) {
+                event.preventDefault();
+                clearMessage();
 
-            if (!isPageReady || !currentTeacher) {
-                showMessage(
-                    "The teacher account is not ready. Reload the page.",
-                    "error"
-                );
-                return;
-            }
-
-            const courseId = courseSelect.value;
-            const title = document.getElementById("lessonTitle")
-                .value.trim();
-            const description = document.getElementById("lessonDescription")
-                .value.trim();
-            const videoFile = document.getElementById("videoFile")
-                .files[0];
-            const pdfFile = document.getElementById("pdfFile")
-                .files[0];
-
-            if (!courseId || !title || !description || !videoFile) {
-                showMessage(
-                    "Please select a course and enter the lesson details "
-                    + "and a video file.",
-                    "error"
-                );
-                return;
-            }
-
-            const videoError = validateFile(
-                videoFile,
-                ["video/mp4", "video/webm", "video/quicktime"],
-                200 * 1024 * 1024
-            );
-
-            if (videoError) {
-                showMessage(
-                    videoError + " This page currently allows videos up to 200 MB.",
-                    "error"
-                );
-                return;
-            }
-
-            if (pdfFile) {
-                const pdfError = validateFile(
-                    pdfFile,
-                    ["application/pdf"],
-                    20 * 1024 * 1024
-                );
-
-                if (pdfError) {
+                if (!isPageReady || !currentTeacher) {
                     showMessage(
-                        pdfError + " PDF limit: 20 MB.",
+                        "Your teacher account is not ready. Reload the page.",
                         "error"
                     );
                     return;
                 }
-            }
 
-            saveLessonButton.disabled = true;
-            saveLessonButton.textContent = "Uploading...";
-            uploadProgress.style.display = "block";
-            progressFill.style.width = "0%";
-            progressText.textContent = "Preparing upload...";
+                const courseId = courseSelect.value;
 
-            let uploadedVideoPath = null;
-            let uploadedPdfPath = null;
+                const title = document.getElementById("lessonTitle")
+                    .value.trim();
 
-            try {
-                /*
-                 * Verify course ownership again before uploading.
-                 */
-                const courseSnapshot = await eduReachDB
-                    .collection("courses")
-                    .doc(courseId)
-                    .get();
+                const description =
+                    document.getElementById("lessonDescription")
+                    .value.trim();
 
-                if (!courseSnapshot.exists) {
-                    throw new Error("The selected course no longer exists.");
-                }
+                const videoFile =
+                    document.getElementById("videoFile").files[0];
 
-                const courseData = courseSnapshot.data();
+                const pdfFile =
+                    document.getElementById("pdfFile").files[0];
 
-                const ownerId =
-                    courseData.teacherId ||
-                    courseData.createdBy ||
-                    courseData.ownerId ||
-                    courseData.teacherUid ||
-                    "";
-
-                if (ownerId !== currentTeacher.uid) {
-                    throw new Error(
-                        "You can upload lessons only to your own courses. "
-                        + "The course ownership data needs to be checked."
+                if (
+                    !courseId ||
+                    !title ||
+                    !description ||
+                    !videoFile
+                ) {
+                    showMessage(
+                        "Select a course, enter the lesson details, "
+                        + "and choose a video file.",
+                        "error"
                     );
+                    return;
                 }
 
-                const safeVideoName = videoFile.name.replace(
-                    /[^a-zA-Z0-9._-]/g,
-                    "_"
-                );
+                if (title.length > 150) {
+                    showMessage(
+                        "The lesson title cannot exceed 150 characters.",
+                        "error"
+                    );
+                    return;
+                }
 
-                const videoPath =
-                    "lesson-videos/" + currentTeacher.uid + "/"
-                    + Date.now() + "_" + safeVideoName;
+                if (description.length > 3000) {
+                    showMessage(
+                        "The lesson description cannot exceed 3000 characters.",
+                        "error"
+                    );
+                    return;
+                }
 
-                progressText.textContent =
-                    "Uploading video: " + formatBytes(videoFile.size);
-
-                const videoResult = await uploadFile(
+                const videoError = validateFile(
                     videoFile,
-                    videoPath,
-                    function (percent) {
-                        progressFill.style.width = percent + "%";
-                        progressText.textContent =
-                            "Uploading video: " + percent + "%";
-                    }
+                    [
+                        "video/mp4",
+                        "video/webm",
+                        "video/quicktime"
+                    ],
+                    MAX_VIDEO_SIZE
                 );
 
-                uploadedVideoPath = videoResult.path;
-
-                let pdfResult = null;
+                if (videoError) {
+                    showMessage(videoError, "error");
+                    return;
+                }
 
                 if (pdfFile) {
-                    const safePdfName = pdfFile.name.replace(
+                    const pdfError = validateFile(
+                        pdfFile,
+                        ["application/pdf"],
+                        MAX_PDF_SIZE
+                    );
+
+                    if (pdfError) {
+                        showMessage(pdfError, "error");
+                        return;
+                    }
+                }
+
+                saveLessonButton.disabled = true;
+                saveLessonButton.textContent = "Uploading...";
+
+                uploadProgress.style.display = "block";
+                progressFill.style.width = "0%";
+                uploadProgress.setAttribute("aria-valuenow", "0");
+
+                progressText.textContent = "Preparing upload...";
+
+                try {
+                    // Confirm the course exists and belongs to this teacher.
+                    const courseSnapshot = await eduReachDB
+                        .collection("courses")
+                        .doc(courseId)
+                        .get();
+
+                    if (!courseSnapshot.exists) {
+                        throw new Error(
+                            "The selected course no longer exists."
+                        );
+                    }
+
+                    const courseData = courseSnapshot.data();
+
+                    if (
+                        courseData.teacherId !== currentTeacher.uid
+                    ) {
+                        throw new Error(
+                            "You can upload lessons only to your own courses."
+                        );
+                    }
+
+                    const timestamp = Date.now();
+
+                    const safeVideoName = videoFile.name.replace(
                         /[^a-zA-Z0-9._-]/g,
                         "_"
                     );
 
-                    const pdfPath =
-                        "lesson-pdfs/" + currentTeacher.uid + "/"
-                        + Date.now() + "_" + safePdfName;
+                    const videoPath =
+                        "lesson-videos/" +
+                        currentTeacher.uid + "/" +
+                        timestamp + "_" + safeVideoName;
 
-                    progressText.textContent = "Uploading PDF notes...";
+                    progressText.textContent = "Uploading video...";
 
-                    pdfResult = await uploadFile(
-                        pdfFile,
-                        pdfPath,
+                    const videoResult = await uploadFile(
+                        videoFile,
+                        videoPath,
                         function (percent) {
                             progressFill.style.width = percent + "%";
+
+                            uploadProgress.setAttribute(
+                                "aria-valuenow",
+                                String(percent)
+                            );
+
                             progressText.textContent =
-                                "Uploading PDF: " + percent + "%";
+                                "Uploading video: " + percent + "%";
                         }
                     );
 
-                    uploadedPdfPath = pdfResult.path;
+                    let pdfResult = null;
+
+                    if (pdfFile) {
+                        const safePdfName = pdfFile.name.replace(
+                            /[^a-zA-Z0-9._-]/g,
+                            "_"
+                        );
+
+                        const pdfPath =
+                            "lesson-pdfs/" +
+                            currentTeacher.uid + "/" +
+                            timestamp + "_" + safePdfName;
+
+                        progressText.textContent =
+                            "Uploading PDF notes...";
+
+                        pdfResult = await uploadFile(
+                            pdfFile,
+                            pdfPath,
+                            function (percent) {
+                                progressFill.style.width =
+                                    percent + "%";
+
+                                uploadProgress.setAttribute(
+                                    "aria-valuenow",
+                                    String(percent)
+                                );
+
+                                progressText.textContent =
+                                    "Uploading PDF: " + percent + "%";
+                            }
+                        );
+                    }
+
+                    progressText.textContent =
+                        "Saving lesson details...";
+
+                    const lessonData = {
+                        courseId: courseId,
+
+                        courseTitle: safeText(
+                            courseData.title || ""
+                        ),
+
+                        teacherId: currentTeacher.uid,
+
+                        teacherName: safeText(
+                            teacherProfile.name ||
+                            currentTeacher.email ||
+                            "Teacher"
+                        ),
+
+                        title: title,
+                        description: description,
+
+                        videoUrl: videoResult.url,
+                        videoPath: videoResult.path,
+                        videoName: videoFile.name,
+                        videoSize: videoFile.size,
+                        videoType: videoFile.type,
+
+                        pdfUrl: pdfResult ? pdfResult.url : null,
+                        pdfPath: pdfResult ? pdfResult.path : null,
+
+                        status: "published",
+
+                        createdAt:
+                            firebase.firestore.FieldValue
+                                .serverTimestamp()
+                    };
+
+                    await eduReachDB
+                        .collection("lessons")
+                        .add(lessonData);
+
+                    lessonForm.reset();
+
+                    progressFill.style.width = "100%";
+
+                    uploadProgress.setAttribute(
+                        "aria-valuenow",
+                        "100"
+                    );
+
+                    progressText.textContent = "Upload complete!";
+
+                    showMessage(
+                        "Lesson uploaded successfully and saved in Firebase.",
+                        "success"
+                    );
+
+                    await loadLessons();
+
+                } catch (error) {
+                    console.error(
+                        "EduReach lesson upload failed:",
+                        error
+                    );
+
+                    showMessage(
+                        "Could not save the lesson: " +
+                        friendlyError(error) +
+                        " Check Firestore and Storage rules.",
+                        "error"
+                    );
+
+                    progressText.textContent =
+                        "Upload did not complete successfully.";
+
+                } finally {
+                    saveLessonButton.textContent =
+                        "Upload and Save Lesson";
+
+                    saveLessonButton.disabled =
+                        !isPageReady ||
+                        courseSelect.options.length <= 1;
                 }
-
-                progressText.textContent = "Saving lesson details...";
-
-                const lessonData = {
-                    courseId: courseId,
-                    courseTitle: safeText(
-                        courseData.title || courseData.name || ""
-                    ),
-                    teacherId: currentTeacher.uid,
-                    teacherName: safeText(
-                        teacherProfile.name || currentTeacher.email
-                    ),
-                    title: title,
-                    description: description,
-                    videoUrl: videoResult.url,
-                    videoPath: videoResult.path,
-                    videoName: videoFile.name,
-                    videoSize: videoFile.size,
-                    videoType: videoFile.type,
-                    pdfUrl: pdfResult ? pdfResult.url : null,
-                    pdfPath: pdfResult ? pdfResult.path : null,
-                    status: "published",
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                };
-
-                await eduReachDB.collection("lessons").add(lessonData);
-
-                lessonForm.reset();
-
-                progressFill.style.width = "100%";
-                progressText.textContent = "Upload complete!";
-
-                showMessage(
-                    "Lesson uploaded successfully! It is saved in Firebase.",
-                    "success"
-                );
-
-                await loadLessons();
-
-            } catch (error) {
-                console.error("Lesson upload failed:", error);
-
-                /*
-                 * We do not automatically delete uploaded files here,
-                 * because a Firestore write failure must be investigated
-                 * before deciding whether to retry or clean up.
-                 */
-                showMessage(
-                    "Could not save the lesson: "
-                    + (error.message || "Unknown error")
-                    + ". Check Firebase Storage and Firestore rules.",
-                    "error"
-                );
-
-                progressText.textContent =
-                    "Upload did not complete successfully.";
-
-            } finally {
-                saveLessonButton.disabled = false;
-                saveLessonButton.textContent = "Upload and Save Lesson";
             }
-        });
+        );
 
         document.getElementById("logoutButton")
             .addEventListener("click", async function () {
+                const button = this;
+
+                button.disabled = true;
+
                 try {
                     await eduReachAuth.signOut();
-                    window.location.href = "index.html";
+
+                    window.location.replace("index.html");
+
                 } catch (error) {
                     showMessage(
-                        "Could not log out: " + error.message,
+                        "Could not log out: " + friendlyError(error),
                         "error"
                     );
+
+                    button.disabled = false;
                 }
             });
 
         initializePage();
     </script>
+
 </body>
 </html>
