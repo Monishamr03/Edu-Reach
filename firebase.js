@@ -35,6 +35,20 @@ window.eduReachAuth = firebase.auth();
 
 window.eduReachDB = firebase.firestore();
 
+/*
+   OFFLINE DATA CACHE
+   Firestore keeps previously read documents available offline and queues
+   supported writes until the connection returns. This does not cache video
+   or PDF files; students must download those files separately.
+*/
+if (typeof window.eduReachDB.enablePersistence === "function") {
+    window.eduReachDB.enablePersistence({ synchronizeTabs: true }).catch(function (error) {
+        // Persistence can be unavailable in private browsing or when multiple
+        // tabs are already using Firestore. The online app should still work.
+        console.warn("EduReach: Firestore offline persistence unavailable:", error.code || error.message);
+    });
+}
+
 
 /* =========================================
    CONFIRM INITIALIZATION
