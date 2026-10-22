@@ -1111,7 +1111,7 @@
                             <span class="stat-tag">YOUR LIBRARY</span>
                         </div>
                         <div class="stat-number" id="courseCount">0</div>
-                        <div class="stat-label">Courses available</div>
+                        <div class="stat-label">Published lessons</div>
                     </article>
 
                 </section>
@@ -1213,8 +1213,19 @@
                             </div>
 
                             <div class="course-placeholder">
-                                <strong>📌 Course catalogue coming next</strong><br>
-                                These are introductory STEM previews. Real lessons, videos, quizzes and teacher-published courses will be connected in the next development steps.
+                                <strong>📚 Teacher-published lessons</strong><br>
+                                Lessons published by your teachers appear below. Open a lesson to access its video or PDF, and download the files before going offline.
+                                <p style="margin:12px 0 0;"><a class="text-link" href="student-lessons.html">Open all published lessons →</a></p>
+                            </div>
+
+                            <div class="section-header" style="margin-top:22px;">
+                                <div>
+                                    <h2>Latest published lessons</h2>
+                                    <p>Updated automatically when teachers publish.</p>
+                                </div>
+                            </div>
+                            <div id="publishedLessonsList" class="course-grid">
+                                <p>Loading published lessons...</p>
                             </div>
 
                         </section>
@@ -1522,6 +1533,75 @@
                 }
             }
 
+            let unsubscribePublishedLessons = null;
+
+            function renderPublishedLessons(snapshot) {
+                const list = document.getElementById("publishedLessonsList");
+                list.replaceChildren();
+
+                const lessons = [];
+                snapshot.forEach(function (doc) {
+                    lessons.push({ id: doc.id, ...doc.data() });
+                });
+
+                lessons.sort(function (a, b) {
+                    return ((b.createdAt && b.createdAt.seconds) || 0) -
+                           ((a.createdAt && a.createdAt.seconds) || 0);
+                });
+
+                document.getElementById("courseCount").textContent = String(lessons.length);
+
+                if (!lessons.length) {
+                    const empty = document.createElement("p");
+                    empty.textContent = "No published lessons yet. Ask your teacher to publish a lesson.";
+                    list.appendChild(empty);
+                    return;
+                }
+
+                lessons.slice(0, 4).forEach(function (lesson) {
+                    const card = document.createElement("article");
+                    card.className = "course-card";
+
+                    const art = document.createElement("div");
+                    art.className = "course-art art-blue";
+                    art.textContent = "📘";
+
+                    const category = document.createElement("div");
+                    category.className = "course-category";
+                    category.textContent = lesson.courseTitle || "STEM course";
+
+                    const title = document.createElement("h3");
+                    title.textContent = lesson.title || "Untitled lesson";
+
+                    const description = document.createElement("p");
+                    description.textContent = lesson.description || "Teacher-published learning material.";
+
+                    const link = document.createElement("a");
+                    link.className = "text-link";
+                    link.href = "student-lessons.html";
+                    link.textContent = "Open lesson and files →";
+
+                    card.append(art, category, title, description, link);
+                    list.appendChild(card);
+                });
+            }
+
+            function listenForPublishedLessons() {
+                if (unsubscribePublishedLessons) unsubscribePublishedLessons();
+
+                unsubscribePublishedLessons = window.eduReachDB
+                    .collection("lessons")
+                    .where("status", "==", "published")
+                    .onSnapshot(
+                        renderPublishedLessons,
+                        function (error) {
+                            console.error("Published lessons listener failed:", error);
+                            const list = document.getElementById("publishedLessonsList");
+                            list.textContent = "Lessons could not load. Check Firestore read permissions and refresh.";
+                        }
+                    );
+            }
+
             function startDashboard() {
                 if (
                     typeof firebase === "undefined" ||
@@ -1572,7 +1652,7 @@
 
                         renderWeek();
 
-                        document.getElementById("courseCount").textContent = "4";
+                        listenForPublishedLessons();
 
                         app.style.display = "block";
                         hideLoading();
